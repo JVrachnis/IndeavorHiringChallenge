@@ -5,8 +5,6 @@ services:
   redis_api:
     image: redis
     container_name: redis_api
-    ports:
-      - "6379:6379"
   db_api:
     image: postgres
     container_name: db_api
@@ -16,23 +14,66 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  redis_replica:
+    image: redis
+    container_name: redis_replica
+  db_replica:
+    image: postgres
+    container_name: db_replica
+    volumes:
+      - ./data/db_replica:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    # CQRS transport backend
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: password
   api:
     build: ./api_server
     container_name: api_server
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./api_server:/api_code
+    ports:
+      - 8000:8000
     depends_on:
+      - rabbitmq
       - redis_api
       - db_api
+  api_replica:
+    build: ./api_replica
+    container_name: api_replica
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./api_replica:/api_code
+    ports:
+      - 8001:8000
+    depends_on:
+      - rabbitmq
+      - redis_replica
+      - db_replica
+  api_replica_consumer:
+    build: ./api_replica
+    container_name: api_replica_consumer
+    command: >
+      ./manage.py cqrs_consume -w2
+    volumes:
+      - ./api_replica:/api_code
+    depends_on:
+      - rabbitmq
+      - redis_replica
+      - db_replica
   redis_web:
     image: redis
-    ports:
-      - "6380:6379"
+    container_name: redis_web
   web_1:
     build: ./web_server
     container_name: web_1
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./web_server:/web_code
     depends_on:
@@ -41,7 +82,7 @@ services:
   web_2:
     build: ./web_server
     container_name: web_2
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./web_server:/web_code
     depends_on:

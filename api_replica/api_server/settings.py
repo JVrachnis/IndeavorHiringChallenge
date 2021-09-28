@@ -132,7 +132,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'db_api',
+        'HOST': 'db_replica',
         'PORT': 5432,
     }
 }
@@ -140,7 +140,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/0',
+        'LOCATION': 'redis://redis_replica:6379/0',
         'OPTIONS': {
             "CLIENT_CLASS": 'django_redis.client.DefaultClient',
         },
@@ -149,11 +149,13 @@ CACHES = {
 
 CQRS = {
     'transport': 'dj_cqrs.transport.rabbit_mq.RabbitMQTransport',
+    'queue': 'blog_replica',
     'host': 'rabbitmq',
     'port': '5672',
     'user': 'rabbitmq',
     'password': 'password',
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 

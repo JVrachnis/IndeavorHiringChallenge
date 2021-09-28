@@ -28,6 +28,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = [ 'name']
 
+
 class ApplicationSerializer:
     """
         Simple serializer
