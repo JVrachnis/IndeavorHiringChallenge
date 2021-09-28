@@ -15,7 +15,7 @@ Failed transactions:	           0
 Longest transaction:	       57.82
 Shortest transaction:	        0.05
 
-CACHE 3s <-- winner
+CACHE 3s
 
 Transactions:		       13809 hits
 Availability:		      100.00 %
@@ -44,3 +44,18 @@ Successful transactions:       13992
 Failed transactions:	           0
 Longest transaction:	        3.61
 Shortest transaction:	        0.04
+
+CACHE 3s nginx load balancer with 2 get servers <-- winner
+
+Transactions:		       17115 hits
+Availability:		      100.00 %
+Elapsed time:		       99.47 secs
+Data transferred:	        1.45 MB
+Response time:		        0.58 secs
+Transaction rate:	      172.06 trans/sec
+Throughput:		        0.01 MB/sec
+Concurrency:		       99.33
+Successful transactions:       17115
+Failed transactions:	           0
+Longest transaction:	        7.66
+Shortest transaction:	        0.01

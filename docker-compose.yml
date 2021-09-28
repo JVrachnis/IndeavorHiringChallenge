@@ -14,18 +14,7 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-  redis_replica:
-    image: redis
-    container_name: redis_replica
-  db_replica:
-    image: postgres
-    container_name: db_replica
-    volumes:
-      - ./data/db_replica:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+
     # CQRS transport backend
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -44,29 +33,89 @@ services:
       - rabbitmq
       - redis_api
       - db_api
-  api_replica:
-    build: ./api_replica
-    container_name: api_replica
+  redis_replica_1:
+    image: redis
+    container_name: redis_replica_1
+  db_replica_1:
+    image: postgres
+    container_name: db_replica_1
+    volumes:
+      - ./data/db_replica_1:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  api_replica_1:
+    build: ./api_replica_1
+    container_name: api_replica_1
     command: bash -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - ./api_replica:/api_code
+      - ./api_replica_1:/api_code
     ports:
       - 8001:8000
     depends_on:
       - rabbitmq
-      - redis_replica
-      - db_replica
-  api_replica_consumer:
-    build: ./api_replica
-    container_name: api_replica_consumer
+      - redis_replica_1
+      - db_replica_1
+    links:
+        - "redis_replica_1:redis_replica"
+        - "db_replica_1:db_replica"
+  api_replica_1_consumer:
+    build: ./api_replica_1
+    container_name: api_replica_1_consumer
     command: >
       ./manage.py cqrs_consume -w2
     volumes:
-      - ./api_replica:/api_code
+      - ./api_replica_1:/api_code
     depends_on:
       - rabbitmq
-      - redis_replica
-      - db_replica
+      - redis_replica_1
+      - db_replica_1
+    links:
+        - "redis_replica_1:redis_replica"
+        - "db_replica_1:db_replica"
+
+  redis_replica_2:
+    image: redis
+    container_name: redis_replica_2
+  db_replica_2:
+    image: postgres
+    container_name: db_replica_2
+    volumes:
+      - ./data/db_replica_2:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  api_replica_2:
+    build: ./api_replica_1
+    container_name: api_replica_2
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8002:8000
+    volumes:
+      - ./api_replica_2:/api_code
+    depends_on:
+      - rabbitmq
+      - redis_replica_2
+      - db_replica_2
+    links:
+        - "redis_replica_2:redis_replica"
+        - "db_replica_2:db_replica"
+  api_replica_2_consumer:
+    build: ./api_replica_1
+    container_name: api_replica_2_consumer
+    command: >
+      ./manage.py cqrs_consume -w2
+    volumes:
+      - ./api_replica_2:/api_code
+    depends_on:
+      - rabbitmq
+      - redis_replica_2
+      - db_replica_2
+    links:
+    - "redis_replica_2:redis_replica"
+    - "db_replica_2:db_replica"
   redis_web:
     image: redis
     container_name: redis_web
@@ -78,7 +127,6 @@ services:
       - ./web_server:/web_code
     depends_on:
       - api
-
   web_2:
     build: ./web_server
     container_name: web_2
@@ -104,5 +152,7 @@ services:
      - api
      - web_1
      - web_2
+     - api_replica_1
+     - api_replica_2
 volumes:
   db-data:

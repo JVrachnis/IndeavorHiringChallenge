@@ -29,11 +29,7 @@ class Application(ReplicaMixin, AbstractApplication):
         if User.objects.filter(pk=mapped_data['id']).exists():
             user=User.objects.get(pk=mapped_data['id'])
         else:
-            user = User.objects.update_or_create(
-                id=mapped_data['id'],
-                password=mapped_data['password'],
-                defaults=mapped_data,
-            )
+            user = User.objects.create(id=mapped_data['id'],username=mapped_data['username'],password=mapped_data['password'])
         return user
     @classmethod
     def cqrs_create(cls, sync, mapped_data, previous_data=None):
@@ -69,11 +65,7 @@ class Grant(ReplicaMixin, AbstractGrant):
         if User.objects.filter(pk=mapped_data['id']).exists():
             user=User.objects.get(pk=mapped_data['id'])
         else:
-            user = User.objects.update_or_create(
-                id=mapped_data['id'],
-                password=mapped_data['password'],
-                defaults=mapped_data,
-            )
+            user = User.objects.create(id=mapped_data['id'],username=mapped_data['username'],password=mapped_data['password'])
         return user
     @classmethod
     def cqrs_create(cls, sync, mapped_data, previous_data=None):
@@ -100,8 +92,23 @@ class Grant(ReplicaMixin, AbstractGrant):
 
     def cqrs_update(self, sync, mapped_data, previous_data=None):
         user = self._handle_user(mapped_data['user'])
-        self.name = mapped_data['name']
-        self.user_id = user
+        self.id=mapped_data['id'],
+        self.user=user,
+        self.code=mapped_data['code'],
+        self.application=Application.objects.get(pk=mapped_data['application']),
+        self.authorization_grant_type=mapped_data['authorization_grant_type'],
+        self.expires=make_aware(datetime.fromtimestamp(mapped_data['expires'])),
+        self.redirect_uri=mapped_data['redirect_uri'],
+        self.scope=mapped_data['scope'],
+        self.created=mapped_data['created'],
+        self.updated=mapped_data['updated'],
+        self.code_challenge=mapped_data['code_challenge'],
+        self.code_challenge_method=mapped_data['code_challenge_method'],
+        self.nonce=mapped_data['nonce'],
+        self.claims=mapped_data['claims'],
+
+        self.cqrs_revision=mapped_data['cqrs_revision'],
+        self.cqrs_updated=mapped_data['cqrs_updated'],
         self.save()
         return self
 
@@ -112,11 +119,7 @@ class AccessToken(ReplicaMixin, AbstractAccessToken):
         if User.objects.filter(pk=mapped_data['id']).exists():
             user=User.objects.get(pk=mapped_data['id'])
         else:
-            user = User.objects.update_or_create(
-                id=mapped_data['id'],
-                password=mapped_data['password'],
-                defaults=mapped_data,
-            )
+            user = User.objects.create(id=mapped_data['id'],username=mapped_data['username'],password=mapped_data['password'])
         return user
     @classmethod
     def cqrs_create(cls, sync, mapped_data, previous_data=None):
@@ -138,8 +141,19 @@ class AccessToken(ReplicaMixin, AbstractAccessToken):
 
     def cqrs_update(self, sync, mapped_data, previous_data=None):
         user = self._handle_user(mapped_data['user'])
-        self.name = mapped_data['name']
-        self.user_id = user
+        self.id=mapped_data['id'],
+        self.user=user,
+        self.source_refresh_token=mapped_data['source_refresh_token'],
+        self.token=mapped_data['token'],
+        self.id_token=mapped_data['id_token'],
+        self.application=Application.objects.get(pk=mapped_data['application']),
+        self.expires=make_aware(datetime.fromtimestamp(mapped_data['expires'])),
+        self.created=mapped_data['created'],
+        self.updated=mapped_data['updated'],
+
+        self.cqrs_revision=mapped_data['cqrs_revision'],
+        self.cqrs_updated=mapped_data['cqrs_updated'],
+        self.user = user
         self.save()
         return self
 
@@ -150,11 +164,7 @@ class RefreshToken(ReplicaMixin, AbstractRefreshToken):
         if User.objects.filter(pk=mapped_data['id']).exists():
             user=User.objects.get(pk=mapped_data['id'])
         else:
-            user = User.objects.update_or_create(
-                id=mapped_data['id'],
-                password=mapped_data['password'],
-                defaults=mapped_data,
-            )
+            user = User.objects.create(id=mapped_data['id'],username=mapped_data['username'],password=mapped_data['password'])
         return user
     @staticmethod
     def _handle_user(mapped_data):
@@ -181,8 +191,16 @@ class RefreshToken(ReplicaMixin, AbstractRefreshToken):
 
     def cqrs_update(self, sync, mapped_data, previous_data=None):
         user = self._handle_user(mapped_data['user'])
-        self.name = mapped_data['name']
-        self.user_id = user
+        self.id=mapped_data['id'],
+        self.user=user,
+        self.token=mapped_data['token'],
+        self.application=Application.objects.get(pk=mapped_data['application']),
+        self.access_token=AccessToken.objects.get(pk=mapped_data['access_token']),
+        self.created=mapped_data['created'],
+        self.updated=mapped_data['updated'],
+
+        self.cqrs_revision=mapped_data['cqrs_revision'],
+        self.cqrs_updated=mapped_data['cqrs_updated'],
         self.save()
         return self
 
@@ -193,11 +211,7 @@ class IDToken(ReplicaMixin, AbstractIDToken):
         if User.objects.filter(pk=mapped_data['id']).exists():
             user=User.objects.get(pk=mapped_data['id'])
         else:
-            user = User.objects.update_or_create(
-                id=mapped_data['id'],
-                password=mapped_data['password'],
-                defaults=mapped_data,
-            )
+            user = User.objects.create(id=mapped_data['id'],username=mapped_data['username'],password=mapped_data['password'])
         return user
     @classmethod
     def cqrs_create(cls, sync, mapped_data, previous_data=None):
