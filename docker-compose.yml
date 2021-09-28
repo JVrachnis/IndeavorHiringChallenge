@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  # cache storage for replica
+  redis_api:
+    image: redis
+    ports:
+      - "6379:6379"
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  api:
+    build: ./api_server
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:443"
+    volumes:
+      - ./api_server:/api_code
+    ports:
+      - "443:443"
+    depends_on:
+      - redis_api
+      - db
+  redis_web:
+    image: redis
+    ports:
+      - "6380:6379"
+  web:
+    build: ./web_server
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./web_server:/web_code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - api
+volumes:
+  db-data:

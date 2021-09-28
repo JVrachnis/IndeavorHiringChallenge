@@ -1,0 +1,4 @@
+Django==3.2.7
+django-bootstrap4==3.0.1
+django-sslserver==0.22
+django-redis==5.0.0

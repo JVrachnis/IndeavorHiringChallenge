@@ -1,0 +1,46 @@
+siege http://localhost:443/employees/ authorized
+
+NO CACHE
+
+Transactions:		        9981 hits
+Availability:		      100.00 %
+Elapsed time:		       99.97 secs
+Data transferred:	        7.29 MB
+Response time:		        1.00 secs
+Transaction rate:	       99.84 trans/sec
+Throughput:		        0.07 MB/sec
+Concurrency:		       99.45
+Successful transactions:        9981
+Failed transactions:	           0
+Longest transaction:	       57.82
+Shortest transaction:	        0.05
+
+CACHE 3s <-- winner
+
+Transactions:		       13809 hits
+Availability:		      100.00 %
+Elapsed time:		       99.40 secs
+Data transferred:	       10.09 MB
+Response time:		        0.72 secs
+Transaction rate:	      138.92 trans/sec
+Throughput:		        0.10 MB/sec
+Concurrency:		       99.53
+Successful transactions:       13809
+Failed transactions:	           0
+Longest transaction:	        3.90
+Shortest transaction:	        0.10
+
+CACHE 10s
+
+Transactions:		       13992 hits
+Availability:		      100.00 %
+Elapsed time:		       99.59 secs
+Data transferred:	       10.22 MB
+Response time:		        0.71 secs
+Transaction rate:	      140.50 trans/sec
+Throughput:		        0.10 MB/sec
+Concurrency:		       99.62
+Successful transactions:       13992
+Failed transactions:	           0
+Longest transaction:	        3.61
+Shortest transaction:	        0.04

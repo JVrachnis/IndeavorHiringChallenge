@@ -1,0 +1,39 @@
+== Info:   Trying 127.0.0.1:443...
+== Info: TCP_NODELAY set
+== Info: Connected to 127.0.0.1 (127.0.0.1) port 443 (#0)
+== Info: Server auth using Basic with user 'admin'
+=> Send header, 143 bytes (0x8f)
+0000: GET /users/ HTTP/1.1
+0016: Host: 127.0.0.1:443
+002b: Authorization: Basic YWRtaW46MTIzcXdlIUAjUVdF
+005a: User-Agent: curl/7.68.0
+0073: Accept: application/json
+008d: 
+== Info: Mark bundle as not supporting multiuse
+<= Recv header, 17 bytes (0x11)
+0000: HTTP/1.1 200 OK
+<= Recv header, 37 bytes (0x25)
+0000: Date: Sun, 26 Sep 2021 09:04:33 GMT
+<= Recv header, 38 bytes (0x26)
+0000: Server: WSGIServer/0.2 CPython/3.9.7
+<= Recv header, 32 bytes (0x20)
+0000: Content-Type: application/json
+<= Recv header, 30 bytes (0x1e)
+0000: Vary: Accept, Cookie, Origin
+<= Recv header, 33 bytes (0x21)
+0000: Allow: GET, POST, HEAD, OPTIONS
+<= Recv header, 23 bytes (0x17)
+0000: X-Frame-Options: DENY
+<= Recv header, 21 bytes (0x15)
+0000: Content-Length: 191
+<= Recv header, 33 bytes (0x21)
+0000: X-Content-Type-Options: nosniff
+<= Recv header, 30 bytes (0x1e)
+0000: Referrer-Policy: same-origin
+<= Recv header, 2 bytes (0x2)
+0000: 
+<= Recv data, 191 bytes (0xbf)
+0000: [{"url":"http://127.0.0.1:443/users/2/","username":"johnvra","em
+0040: ail":"john.al.vra2@hotmail.com","groups":[]},{"url":"http://127.
+0080: 0.0.1:443/users/1/","username":"admin","email":"","groups":[]}]
+== Info: Connection #0 to host 127.0.0.1 left intact

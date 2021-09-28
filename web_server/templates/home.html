@@ -1,0 +1,119 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% load extra %}
+{% block title %}Home page{% endblock %}{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Hello there</h1>
+
+
+    <p class="lead">
+      <div id="target">
+          Click here
+      </div>
+    </p>
+    <hr class="my-4">
+    <p class="lead">
+      <div class="tables-doctor">
+      </div>
+    </p>
+    <hr class="my-4">
+</div>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://unpkg.com/coreapi@latest/dist/coreapi.js"></script>
+
+<script type="text/javascript">
+var auth={}
+$.ajax({
+// The URL to process the request
+url : 'http://localhost:443/o/token/',
+type : 'POST',
+dataType: "json",
+data:{'grant_type':'password'
+      ,'username':'admin',
+      'password':'123qwe!@#QWE',
+      'scope':'read write'},
+beforeSend: function (xhr) {
+    xhr.setRequestHeader ("Authorization", "Basic " + btoa("e5AnSIkaVJjTCECv28ZXmPxgDzeAjBXe4n4v63n0" + ":" + "kbCmhs2ExhCYOcggI8AjCzXwZHCsElHhSfE2v3cXzzMeZLJmMYFhKdA58teRY42MWAINnFOiYYoKO31nvEFUmjBJigUICDbS6gIa6WxVmIyMXmDxBSwVDoCAfOYJmCup"));
+},
+success: function(JsonResponse) {
+   console.log(JsonResponse)
+   auth=JsonResponse
+   setCookie('access_token',auth.access_token,auth.expires_in)
+   $.ajax({
+   // The URL to process the request
+   url : 'http://localhost:443/skills/',
+   type : 'POST',
+   dataType: "json",
+   data:{'name':'hardware3',
+         'categories':['http://localhost:443/skillcategories/1/','http://localhost:443/skillcategories/2/'],
+         'description':'help',
+       },
+         beforeSend: function (xhr) {
+             xhr.setRequestHeader ("Authorization", "Bearer " + getCookie('access_token'));
+         },
+    traditional: true,
+   success: function(JsonResponse) {
+      console.log(JsonResponse)
+    },
+   error: function(JsonResponse) {
+      console.log(JsonResponse)
+    }
+  });
+ }
+ });
+
+         $("#target").click(function(){
+         $.ajax({
+         // The URL to process the request
+         url : 'http://0.0.0.0:443/users/',
+         type : 'GET',
+         dataType: "json",
+         beforeSend: function (xhr) {
+             xhr.setRequestHeader ("Authorization", "Bearer " + getCookie('access_token'));
+         },
+         success: function(JsonResponse) {
+           var data = JsonResponse
+           var tbl_body = '<table class="table"><tbody>';
+           var odd_even = false;
+           $.each(data, function() {
+              var tbl_row = "";
+              $.each(this, function(k , v) {
+                  tbl_row += "<td>"+v+"</td>";
+
+              });
+              tbl_body += '<tr class="'+( odd_even ? "odd" : "even")+"\">"+tbl_row+"</tr>";
+              odd_even = !odd_even;
+            });
+            tbl_body+="</tbody></table>";
+            console.log(tbl_body)
+          console.log(data)
+          $(".tables-doctor").html(tbl_body);
+          }
+          });
+         });
+
+         function setCookie(cname, cvalue, ex) {
+           const d = new Date();
+           d.setTime(d.getTime() + (ex));
+           let expires = "expires="+ d.toUTCString();
+           document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+         }
+         function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+</script>
+{% endblock %}
