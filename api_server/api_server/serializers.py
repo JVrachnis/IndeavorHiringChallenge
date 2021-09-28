@@ -5,25 +5,25 @@ from api_server.models import *
 class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Employee
-        fields = ['url', 'name', 'surname', 'hiring_date','skillset','photo']
+        fields = [ 'name', 'surname', 'hiring_date','skillset','photo']
 
 class SkillSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Skill
-        fields = ['url', 'name', 'categories', 'description']
+        fields = ['name', 'categories', 'description']
 
 class SkillCategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SkillCategory
-        fields = ['url', 'name', 'soft_skill']
+        fields = ['name', 'soft_skill']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups']
+        fields = ['username', 'email', 'groups']
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
-        fields = ['url', 'name']
+        fields = [ 'name']

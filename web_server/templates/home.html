@@ -12,22 +12,23 @@
           Click here
       </div>
     </p>
-    <hr class="my-4">
+    <hr class="my-5">
     <p class="lead">
       <div class="tables-doctor">
       </div>
     </p>
-    <hr class="my-4">
+    <hr class="my-5">
 </div>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="https://code.jquery.com/jquery-latest.js"></script>
 <script src="https://unpkg.com/coreapi@latest/dist/coreapi.js"></script>
 
 <script type="text/javascript">
+
 var auth={}
 $.ajax({
 // The URL to process the request
-url : 'http://localhost:443/o/token/',
+url : 'https://'+window.location.host+'/api/o/token/',
 type : 'POST',
 dataType: "json",
 data:{'grant_type':'password'
@@ -37,37 +38,20 @@ data:{'grant_type':'password'
 beforeSend: function (xhr) {
     xhr.setRequestHeader ("Authorization", "Basic " + btoa("e5AnSIkaVJjTCECv28ZXmPxgDzeAjBXe4n4v63n0" + ":" + "kbCmhs2ExhCYOcggI8AjCzXwZHCsElHhSfE2v3cXzzMeZLJmMYFhKdA58teRY42MWAINnFOiYYoKO31nvEFUmjBJigUICDbS6gIa6WxVmIyMXmDxBSwVDoCAfOYJmCup"));
 },
+error: function(JsonResponse) {
+   console.log(JsonResponse)
+ },
 success: function(JsonResponse) {
    console.log(JsonResponse)
    auth=JsonResponse
    setCookie('access_token',auth.access_token,auth.expires_in)
-   $.ajax({
-   // The URL to process the request
-   url : 'http://localhost:443/skills/',
-   type : 'POST',
-   dataType: "json",
-   data:{'name':'hardware3',
-         'categories':['http://localhost:443/skillcategories/1/','http://localhost:443/skillcategories/2/'],
-         'description':'help',
-       },
-         beforeSend: function (xhr) {
-             xhr.setRequestHeader ("Authorization", "Bearer " + getCookie('access_token'));
-         },
-    traditional: true,
-   success: function(JsonResponse) {
-      console.log(JsonResponse)
-    },
-   error: function(JsonResponse) {
-      console.log(JsonResponse)
-    }
-  });
  }
  });
 
          $("#target").click(function(){
          $.ajax({
          // The URL to process the request
-         url : 'http://0.0.0.0:443/users/',
+         url : 'https://'+window.location.host+'/api/employees/',
          type : 'GET',
          dataType: "json",
          beforeSend: function (xhr) {

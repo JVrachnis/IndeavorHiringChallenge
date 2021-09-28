@@ -30,8 +30,8 @@ router.register(r'skills',SkillViewSet,basename='skill')
 router.register(r'skillcategories',SkillCategoryViewSet)
 # Setup the URLs and include login URLs for the browsable API.
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/admin/', admin.site.urls),
+    path('api/', include(router.urls)),
+    path('api/o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
