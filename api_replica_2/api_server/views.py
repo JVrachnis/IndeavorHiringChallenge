@@ -18,12 +18,6 @@ import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-
 class UserViewSet(viewsets.ModelViewSet):
 
     """
@@ -31,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
     @method_decorator(cache_page(3))
