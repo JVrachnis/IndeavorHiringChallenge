@@ -45,7 +45,7 @@ Failed transactions:	           0
 Longest transaction:	        3.61
 Shortest transaction:	        0.04
 
-CACHE 3s nginx load balancer with 2 get servers <-- winner
+CACHE 3s nginx load balancer with 2 get servers <-- winner (didnt have the same size data tho)
 
 Transactions:		       17115 hits
 Availability:		      100.00 %

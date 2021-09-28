@@ -34,4 +34,5 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/register/', RegisterView.as_view(), name='register'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
