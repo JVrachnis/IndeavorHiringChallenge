@@ -62,6 +62,11 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = [ 'name']
 
+class CQRSEmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = [ 'id', 'name', 'surname', 'hiring_date','skillset','photo']
+
 class ApplicationSerializer:
     """
         Simple serializer

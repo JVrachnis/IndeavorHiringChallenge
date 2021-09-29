@@ -21,6 +21,20 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: rabbitmq
       RABBITMQ_DEFAULT_PASS: password
+  ftpd_server:
+    image: stilliard/pure-ftpd
+    container_name: ftpd_server
+    volumes: # remember to replace /folder_on_disk/ with the path to where you want to store the files on the host machine
+      - "./api_replica/media:/home/username/"
+      - "./data/ftp/passwd:/etc/pure-ftpd/passwd"
+    environment:
+      PUBLICHOST: "localhost"
+      FTP_USER_NAME: ftpd_server
+      FTP_USER_PASS: password
+      FTP_USER_HOME: /home/username
+# also for ssl/tls:
+#      ADDED_FLAGS: "--tls=2"
+    restart: always
   api:
     build: ./api_server
     container_name: api_server
@@ -46,11 +60,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   api_replica_1:
-    build: ./api_replica_1
+    build: ./api_replica
     container_name: api_replica_1
     command: bash -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - ./api_replica_1:/api_code
+      - ./api_replica:/api_code
     ports:
       - 8001:8000
     depends_on:
@@ -61,12 +75,12 @@ services:
         - "redis_replica_1:redis_replica"
         - "db_replica_1:db_replica"
   api_replica_1_consumer:
-    build: ./api_replica_1
+    build: ./api_replica
     container_name: api_replica_1_consumer
     command: >
       ./manage.py cqrs_consume -w2
     volumes:
-      - ./api_replica_1:/api_code
+      - ./api_replica:/api_code
     depends_on:
       - rabbitmq
       - redis_replica_1
@@ -88,13 +102,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   api_replica_2:
-    build: ./api_replica_1
+    build: ./api_replica
     container_name: api_replica_2
     command: bash -c "python manage.py runserver 0.0.0.0:8000"
     ports:
       - 8002:8000
     volumes:
-      - ./api_replica_2:/api_code
+      - ./api_replica:/api_code
     depends_on:
       - rabbitmq
       - redis_replica_2
@@ -103,12 +117,12 @@ services:
         - "redis_replica_2:redis_replica"
         - "db_replica_2:db_replica"
   api_replica_2_consumer:
-    build: ./api_replica_1
+    build: ./api_replica
     container_name: api_replica_2_consumer
     command: >
       ./manage.py cqrs_consume -w2
     volumes:
-      - ./api_replica_2:/api_code
+      - ./api_replica:/api_code
     depends_on:
       - rabbitmq
       - redis_replica_2
@@ -146,7 +160,7 @@ services:
       - ./nginx_server/ssl/cert/nginx-selfsigned.crt:/etc/nginx/cert/star_xx_com.crt
     ports:
       - "8080:8080"
-      - "443:443"
+      - "192.168.2.164:443:443"
       - "80:80"
     links:
      - api

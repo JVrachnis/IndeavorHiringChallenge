@@ -1,3 +1,4 @@
 /data
 /rabbitmq
 *.pyc
+*/media/*

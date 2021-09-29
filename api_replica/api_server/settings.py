@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import socket
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -24,7 +24,10 @@ SECRET_KEY = 'django-insecure-vf%subgzp#&3+%^p#=%^d_dh0eo_nu5d2u@c)a9*gl!1f3gjbr
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+try:
+    CONTAINER_ID = socket.gethostname()
+except:
+    CONTAINER_ID = 'replica'
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -149,7 +152,7 @@ CACHES = {
 
 CQRS = {
     'transport': 'dj_cqrs.transport.rabbit_mq.RabbitMQTransport',
-    'queue': 'blog_replica',
+    'queue': CONTAINER_ID,
     'host': 'rabbitmq',
     'port': '5672',
     'user': 'rabbitmq',
@@ -193,11 +196,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+
+
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+STATICFILES_STORAGE = 'storages.backends.ftp.FTPStorage'
+FTP_STORAGE_LOCATION = 'ftp://ftpd_server:password@ftpd_server:21'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

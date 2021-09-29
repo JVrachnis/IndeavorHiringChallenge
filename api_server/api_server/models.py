@@ -73,7 +73,7 @@ class Skill(MasterMixin, models.Model):
 class Employee(MasterMixin, models.Model):
     CQRS_ID = 'employee'
     CQRS_TRACKED_FIELDS = ('name', 'surname','hiring_date','photo')
-
+    CQRS_SERIALIZER = 'api_server.serializers.CQRSEmployeeSerializer'
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     hiring_date = models.DateTimeField(default=datetime.now, blank=False)
