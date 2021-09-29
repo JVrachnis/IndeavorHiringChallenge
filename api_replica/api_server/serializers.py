@@ -2,31 +2,47 @@ from rest_framework import generics, permissions, serializers, viewsets
 from django.contrib.auth.models import User, Group
 from api_server.models import *
 # first we define the serializers
-class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
+class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = [ 'name', 'surname', 'hiring_date','skillset','photo']
-
-class SkillSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Skill
-        fields = ['name', 'categories', 'description']
+        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','skillset']
 
 class SkillCategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SkillCategory
-        fields = ['name', 'soft_skill']
+        fields = ['url','id','name', 'soft_skill']
+class SkillCategoriesSerializer(serializers.ModelSerializer):
+
+    skillCategory_soft_skill = serializers.CharField(source='soft_skill')
+    skillCategory_name = serializers.CharField(source='name')
+    skillCategory_id = serializers.CharField(source='id')
+    class Meta:
+        model = SkillCategories
+        lookup_fields =['skillCategory']
+        fields = ['skillCategory_name','skillCategory_id','skillCategory_soft_skill', 'created','updated']
+
+class SkillSerializer(serializers.ModelSerializer):
+    # categories = SkillCategorySerializer(many=True, read_only=True)
+    class Meta:
+        model = Skill
+        fields = ['name', 'description','categories']
+
+# class SkillSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Skill
+#         fields = ['url','name', 'categories', 'description']
+
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'groups']
+        fields = ['url','id','username', 'email', 'groups']
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
-        fields = [ 'name']
+        fields = ['url','id', 'name']
 
 
 class ApplicationSerializer:

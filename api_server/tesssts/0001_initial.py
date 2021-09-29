@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
                 ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
                 ('name', models.CharField(max_length=100, primary_key=True, serialize=False)),
                 ('description', models.CharField(max_length=500)),
-                ('categories', models.ManyToManyField(through='api_server.SkillCategories',to='api_server.SkillCategory', related_name='categories')),
+                ('categories', models.ManyToManyField(through='api_server.SkillCategories',to='api_server.SkillCategory')),
                 ('created', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
@@ -128,18 +128,7 @@ class Migration(migrations.Migration):
         #         'abstract': False,
         #     },
         # ),
-        migrations.AddField(
-            model_name='skillcategories',
-            name='skill',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api_server.skill'),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='skillcategories',
-            name='skillCategory',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api_server.skillcategory'),
-            preserve_default=False,
-        ),
+
         migrations.CreateModel(
             name='SkillSets',
             fields=[
@@ -160,7 +149,7 @@ class Migration(migrations.Migration):
                 ('surname', models.CharField(max_length=50)),
                 ('hiring_date', models.DateTimeField(default=datetime.datetime.now)),
                 ('photo', models.ImageField(upload_to='employees')),
-                ('skillset', models.ManyToManyField(through='api_server.SkillSets',to='api_server.Skill', related_name='skillsets')),
+                ('skillset', models.ManyToManyField(through='api_server.SkillSets',to='api_server.Skill')),
                 ('created', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
@@ -168,18 +157,7 @@ class Migration(migrations.Migration):
                 'unique_together': {('name', 'surname', 'hiring_date')},
             },
         ),
-        migrations.AddField(
-            model_name='skillsets',
-            name='employee',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api_server.employee'),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='skillsets',
-            name='skill',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api_server.skill'),
-            preserve_default=False,
-        ),
+
         # migrations.CreateModel(
         #     name='SkillSets',
         #     fields=[

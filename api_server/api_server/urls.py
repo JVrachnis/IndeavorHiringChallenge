@@ -23,7 +23,7 @@ from api_server.views import *
 
 #curl -X POST -d 'grant_type=password&username=admin&password=123qwe!@#QWE' -u"e5AnSIkaVJjTCECv28ZXmPxgDzeAjBXe4n4v63n0:kbCmhs2ExhCYOcggI8AjCzXwZHCsElHhSfE2v3cXzzMeZLJmMYFhKdA58teRY42MWAINnFOiYYoKO31nvEFUmjBJigUICDbS6gIa6WxVmIyMXmDxBSwVDoCAfOYJmCup" http://localhost:443/o/token/
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+# router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'employees',EmployeeViewSet,basename='employee')
 router.register(r'skills',SkillViewSet,basename='skill')

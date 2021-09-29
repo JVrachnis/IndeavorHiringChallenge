@@ -23,22 +23,22 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = RegisterSerializer
 
-class UserViewSet(viewsets.ModelViewSet):
-
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated,permissions.IsAdminUser]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-
-    @method_decorator(cache_page(3))
-    def list(self, *args, **kwargs):
-        return super().list(*args, **kwargs)
-    @method_decorator(cache_page(60))
-    def retrieve(self, *args, **kwargs):
-        return super().retrieve(*args, **kwargs)
+# class UserViewSet(viewsets.ModelViewSet):
+#
+#     """
+#     API endpoint that allows users to be viewed or edited.
+#     """
+#     queryset = User.objects.all().order_by('-date_joined')
+#     serializer_class = UserSerializer
+#     permission_classes = [permissions.IsAuthenticated,permissions.IsAdminUser]
+#     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+#
+#     @method_decorator(cache_page(3))
+#     def list(self, *args, **kwargs):
+#         return super().list(*args, **kwargs)
+#     @method_decorator(cache_page(60))
+#     def retrieve(self, *args, **kwargs):
+#         return super().retrieve(*args, **kwargs)
 
 class GroupViewSet(viewsets.ModelViewSet):
     """
@@ -63,13 +63,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset =  Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # filterset_fields = ['id', 'name', 'surname','hiring_date','skillset__name']
-    # search_fields = ['id','name', 'surname','hiring_date','skillset__name']
-    # ordering_fields = ['name','surname','hiring_date', 'id']
-    # ordering = ['hiring_date']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['id', 'name', 'surname','hiring_date','skillset__name']
+    search_fields = ['id','name', 'surname','hiring_date','skillset__name']
+    ordering_fields = ['name','surname','hiring_date', 'id']
+    ordering = ['hiring_date']
 
-    @method_decorator(cache_page(3))
+    # @method_decorator(cache_page(3))
     def list(self, *args, **kwargs):
         return super().list(*args, **kwargs)
     @method_decorator(cache_page(60))

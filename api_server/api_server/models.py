@@ -21,37 +21,37 @@ from oauth2_provider.models import (
 class Application(MasterMixin, AbstractApplication):
     CQRS_ID = 'application'
     CQRS_SERIALIZER = 'api_server.serializers.ApplicationSerializer'
-    @classmethod
-    def relate_cqrs_serialization(cls, queryset):
-        return queryset.select_related('user')
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('user')
 
 class Grant(MasterMixin, AbstractGrant):
     CQRS_ID = 'grant'
     CQRS_SERIALIZER = 'api_server.serializers.GrantTokenSerializer'
-    @classmethod
-    def relate_cqrs_serialization(cls, queryset):
-        return queryset.select_related('user')
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('user')
 
 class AccessToken(MasterMixin, AbstractAccessToken):
     CQRS_ID = 'accesstoken'
     CQRS_SERIALIZER = 'api_server.serializers.AccessTokenSerializer'
-    @classmethod
-    def relate_cqrs_serialization(cls, queryset):
-        return queryset.select_related('user')
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('user')
 
 class RefreshToken(MasterMixin, AbstractRefreshToken):
     CQRS_ID = 'refreshtoken'
     CQRS_SERIALIZER = 'api_server.serializers.RefreshTokenSerializer'
-    @classmethod
-    def relate_cqrs_serialization(cls, queryset):
-        return queryset.select_related('user')
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('access_token').select_related('user')
 
 class IDToken(MasterMixin, AbstractIDToken):
     CQRS_ID = 'idtoken'
     CQRS_SERIALIZER = 'api_server.serializers.IDTokenSerializer'
-    @classmethod
-    def relate_cqrs_serialization(cls, queryset):
-        return queryset.select_related('user')
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('user')
 
 class SkillCategory(MasterMixin, models.Model):
     CQRS_ID = 'skillcategory'
@@ -59,16 +59,38 @@ class SkillCategory(MasterMixin, models.Model):
 
     name = models.CharField(max_length=100)
     soft_skill = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     class Meta:
         unique_together = ('name', 'soft_skill')
+
 
 class Skill(MasterMixin, models.Model):
     CQRS_ID = 'skill'
     CQRS_TRACKED_FIELDS = ('name','description')
+    # CQRS_SERIALIZER = 'api_server.serializers.CQRSSkillSerializer'
 
     name = models.CharField(max_length=100,primary_key=True)
-    categories = models.ManyToManyField(SkillCategory)
+    categories = models.ManyToManyField(SkillCategory, through='SkillCategories')
     description = models.CharField(max_length=500)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('categories')
+
+class SkillCategories(MasterMixin, models.Model):
+    CQRS_ID = 'skillcategories'
+    CQRS_TRACKED_FIELDS = ('skill','skillCategory')
+    CQRS_SERIALIZER = 'api_server.serializers.CQRSSkillCategoriesSerializer'
+
+    skill = models.ForeignKey(Skill,on_delete=models.CASCADE)
+    skillCategory = models.ForeignKey(SkillCategory,on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('skillCategory')
 
 class Employee(MasterMixin, models.Model):
     CQRS_ID = 'employee'
@@ -77,7 +99,26 @@ class Employee(MasterMixin, models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     hiring_date = models.DateTimeField(default=datetime.now, blank=False)
-    skillset = models.ManyToManyField(Skill)
+    skillset = models.ManyToManyField(Skill, through='SkillSets')
     photo = models.ImageField(upload_to='employees')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     class Meta:
         unique_together = ('name', 'surname','hiring_date')
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('skillset')
+
+
+class SkillSets(MasterMixin, models.Model):
+    CQRS_ID = 'skillsets'
+    CQRS_TRACKED_FIELDS = ('skill','employee')
+    CQRS_SERIALIZER = 'api_server.serializers.CQRSSkillSetsSerializer'
+
+    skill = models.ForeignKey(Skill,on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee,on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    # @classmethod
+    # def relate_cqrs_serialization(cls, queryset):
+    #     return queryset.select_related('employee')

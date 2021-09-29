@@ -166,13 +166,6 @@ class RefreshToken(ReplicaMixin, AbstractRefreshToken):
         else:
             user = User.objects.create(id=mapped_data['id'],username=mapped_data['username'],password=mapped_data['password'])
         return user
-    @staticmethod
-    def _handle_user(mapped_data):
-        user, _ = User.objects.update_or_create(
-            id=mapped_data['id'],
-            defaults=mapped_data,
-        )
-        return user
     @classmethod
     def cqrs_create(cls, sync, mapped_data, previous_data=None):
         user = cls._handle_user(mapped_data['user'])
@@ -181,7 +174,7 @@ class RefreshToken(ReplicaMixin, AbstractRefreshToken):
             user=user,
             token=mapped_data['token'],
             application=Application.objects.get(pk=mapped_data['application']),
-            access_token=AccessToken.objects.get(pk=mapped_data['access_token']),
+            # access_token=AccessToken.objects.get(pk=mapped_data['access_token']),
             created=mapped_data['created'],
             updated=mapped_data['updated'],
 
@@ -195,7 +188,7 @@ class RefreshToken(ReplicaMixin, AbstractRefreshToken):
         self.user=user,
         self.token=mapped_data['token'],
         self.application=Application.objects.get(pk=mapped_data['application']),
-        self.access_token=AccessToken.objects.get(pk=mapped_data['access_token']),
+        # self.access_token=AccessToken.objects.get(pk=mapped_data['access_token']),
         self.created=mapped_data['created'],
         self.updated=mapped_data['updated'],
 
@@ -244,6 +237,8 @@ class SkillCategory(ReplicaMixin, models.Model):
 
     name = models.CharField(max_length=100)
     soft_skill = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     class Meta:
         unique_together = ('name', 'soft_skill')
 
@@ -252,8 +247,41 @@ class Skill(ReplicaMixin, models.Model):
     CQRS_TRACKED_FIELDS = ('name','description')
 
     name = models.CharField(max_length=100,primary_key=True)
-    categories = models.ManyToManyField(SkillCategory)
+    categories = models.ManyToManyField(SkillCategory, through='SkillCategories')
     description = models.CharField(max_length=500)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+class SkillCategories(ReplicaMixin, models.Model):
+    CQRS_ID = 'skillcategories'
+    CQRS_TRACKED_FIELDS = ('skill','skillCategory')
+
+    skill = models.ForeignKey(Skill,on_delete=models.CASCADE)
+    skillCategory = models.ForeignKey(SkillCategory,on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    @classmethod
+    def cqrs_create(cls, sync, mapped_data, previous_data=None):
+        return SkillCategories.objects.create(
+            id=mapped_data['id'],
+            skill=Skill.objects.get(name = mapped_data['skill']['name']),
+            skillCategory= SkillCategory.objects.get(pk = mapped_data['skillCategory']['id']),
+            created=mapped_data['created'],
+            updated=mapped_data['updated'],
+
+            cqrs_revision=mapped_data['cqrs_revision'],
+            cqrs_updated=mapped_data['cqrs_updated'],
+        )
+
+    def cqrs_update(self, sync, mapped_data, previous_data=None):
+        self.skill=Skill.objects.get(name = mapped_data['skill']['name']),
+        self.skillCategory= SkillCategory.objects.get(pk = mapped_data['skillCategory']['id']),
+        self.created = mapped_data['created']
+        self.updated = mapped_data['updated']
+        self.cqrs_revision=mapped_data['cqrs_revision'],
+        self.cqrs_updated=mapped_data['cqrs_updated'],
+        self.save()
+        return self
 
 class Employee(ReplicaMixin, models.Model):
     CQRS_ID = 'employee'
@@ -262,7 +290,41 @@ class Employee(ReplicaMixin, models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     hiring_date = models.DateTimeField(default=datetime.now, blank=False)
-    skillset = models.ManyToManyField(Skill)
+    skillset = models.ManyToManyField(Skill, through='SkillSets')
     photo = models.ImageField(upload_to='employees')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     class Meta:
         unique_together = ('name', 'surname','hiring_date')
+
+
+class SkillSets(ReplicaMixin, models.Model):
+    CQRS_ID = 'skillsets'
+    CQRS_TRACKED_FIELDS = ('skill','employee')
+
+    skill = models.ForeignKey(Skill,on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee,on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    @classmethod
+    def cqrs_create(cls, sync, mapped_data, previous_data=None):
+        return SkillSets.objects.create(
+            id=mapped_data['id'],
+            skill=Skill.objects.get(name = mapped_data['skill']['name']),
+            employee= Employee.objects.get(pk = mapped_data['employee']['id']),
+            created=mapped_data['created'],
+            updated=mapped_data['updated'],
+
+            cqrs_revision=mapped_data['cqrs_revision'],
+            cqrs_updated=mapped_data['cqrs_updated'],
+        )
+
+    def cqrs_update(self, sync, mapped_data, previous_data=None):
+        self.skill=Skill.objects.get(name = mapped_data['skill']['name']),
+        self.employee= Employee.objects.get(pk = mapped_data['employee']['id']),
+        self.created = mapped_data['created']
+        self.updated = mapped_data['updated']
+        self.cqrs_revision=mapped_data['cqrs_revision'],
+        self.cqrs_updated=mapped_data['cqrs_updated'],
+        self.save()
+        return self

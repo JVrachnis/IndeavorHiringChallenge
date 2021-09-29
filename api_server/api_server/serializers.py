@@ -41,7 +41,13 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
         model = Employee
         fields = [ 'name', 'surname', 'hiring_date','skillset','photo']
 
+class SkillCategoriesSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = SkillCategories
+        fields = [ 'skill', 'skillCategories', 'created','skillset','created']
+
 class SkillSerializer(serializers.HyperlinkedModelSerializer):
+    categories = SkillCategoriesSerializer()
     class Meta:
         model = Skill
         fields = ['name', 'categories', 'description']
@@ -52,21 +58,138 @@ class SkillCategorySerializer(serializers.HyperlinkedModelSerializer):
         fields = ['name', 'soft_skill']
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'groups']
+# class UserSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['username', 'email', 'groups']
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = [ 'name']
 
+
+class CQRSSkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = [ 'name', 'categories', 'description','created','updated']
+    """
+        Simple serializer
+    """
+    def __init__(self, instance):
+        self.instance = instance
+
+    @property
+    def data(self):
+        return {
+            'name': self.instance.name,
+            'categories': self.instance.categories,
+            'description': self.instance.description,
+            'created': self.instance.created.timestamp(),
+            'updated': self.instance.updated.timestamp(),
+            'CQRS_ID': self.instance.CQRS_ID,
+        }
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','']
+
 class CQRSEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = [ 'id', 'name', 'surname', 'hiring_date','skillset','photo']
+        fields = ['id', 'name', 'surname', 'hiring_date','photo',]
 
+# class CQRSEmployeeSerializer:
+#     """
+#         Simple serializer
+#     """
+#     def __init__(self, instance):
+#         self.instance = instance
+#
+#     @property
+#     def data(self):
+#         return {
+#             'id': self.instance.id,
+#             'name': self.instance.name,
+#             'surname': self.instance.surname,
+#             'hiring_date': self.instance.hiring_date.timestamp(),
+#             'skillset': {
+#                 'id': self.instance.skillset.id,
+#                 'skill': self.instance.skillset.urlskill.id,
+#                 'employee': self.instance.skillset.employee.id,
+#             },
+#             'photo': self.instance.photo.url,
+#             'created': self.instance.created.timestamp(),
+#             'updated': self.instance.updated.timestamp(),
+#             'CQRS_ID': self.instance.CQRS_ID,
+#         }
+class CQRSSkillCategoriesSerializer:
+    """
+        Simple serializer
+    """
+    def __init__(self, instance):
+        self.instance = instance
+
+    @property
+    def data(self):
+        return {
+            'id': self.instance.id,
+            'skill': {
+                'name': self.instance.skill.name,
+            },
+            'skillCategory': {
+                'id': self.instance.skillCategory.id,
+            },
+            'created': self.instance.created.timestamp(),
+            'updated': self.instance.updated.timestamp(),
+            'CQRS_ID': self.instance.CQRS_ID,
+        }
+class CQRSSkillSetsSerializer:
+    """
+        Simple serializer
+    """
+    def __init__(self, instance):
+        self.instance = instance
+
+    @property
+    def data(self):
+        return {
+            'id': self.instance.id,
+            'skill': {
+                'name': self.instance.skill.name,
+            },
+            'employee': {
+                'id': self.instance.employee.id,
+            },
+            'created': self.instance.created.timestamp(),
+            'updated': self.instance.updated.timestamp(),
+            'CQRS_ID': self.instance.CQRS_ID,
+        }
+class CQRSEmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = [ 'id', 'name', 'surname', 'hiring_date','photo','created','updated']
+
+# class CQRSEmployeeSerializer:
+#     """
+#         Simple serializer
+#     """
+#     def __init__(self, instance):
+#         self.instance = instance
+#
+#     @property
+#     def data(self):
+#         return {
+#             'id': self.instance.id,
+#             'name': self.instance.name,
+#             'surname': self.instance.surname,
+#             'hiring_date': self.instance.hiring_date.timestamp(),
+#             'photo': self.instance.photo.url,
+#             'created': self.instance.created.timestamp(),
+#             'updated': self.instance.updated.timestamp(),
+#             'CQRS_ID': self.instance.CQRS_ID,
+#         }
 class ApplicationSerializer:
     """
         Simple serializer
@@ -111,7 +234,6 @@ class AccessTokenSerializer:
                 'username': self.instance.user.username,
                 'password': self.instance.user.password,
             },
-            'source_refresh_token': self.instance.source_refresh_token,
             'token': self.instance.token,
             'id_token': self.instance.id_token,
             'application': self.instance.application.id,
@@ -139,9 +261,6 @@ class RefreshTokenSerializer:
             },
             'token': self.instance.token,
             'application': self.instance.application.id,
-            'access_token': self.instance.access_token.id,
-            # 'expires': self.instance.expires.timestamp(),
-            # 'scope': self.instance.scope,
             'created': self.instance.created.timestamp(),
             'updated': self.instance.updated.timestamp(),
             'CQRS_ID': self.instance.CQRS_ID,
