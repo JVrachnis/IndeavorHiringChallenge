@@ -114,21 +114,26 @@ class CQRSSkillSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','skillSet']
+        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','skillset']
     def create(self, validated_data):
         employee = Employee(
             name=validated_data['name'],
             surname=validated_data['surname'],
             hiring_date=validated_data['hiring_date'],
-            photo=validated_data['photo'],
         )
+        print(validated_data)
+        if 'photo'  in validated_data:
+            employee.photo = validated_data['photo']
+        # if 'hiring_date' in validated_data:
+        #     employee.,
         employee.save()
-        for val in validated_data['skillSet']:
-            if Skill.objects.filter(name=val).exists():
-                skill = Skill.objects.get(name=val)
-                SkillSets.objects.create(employee=employee,skill=skill)
+        if 'skillset' in validated_data:
+            for val in validated_data['skillset']:
+                if Skill.objects.filter(name=val).exists():
+                    skill = Skill.objects.get(name=val)
+                    SkillSets.objects.create(employee=employee,skill=skill)
 
-        return validated_data
+        return employee
 
 class CQRSEmployeeSerializer(serializers.ModelSerializer):
     class Meta:

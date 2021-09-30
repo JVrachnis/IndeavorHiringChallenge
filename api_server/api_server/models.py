@@ -93,9 +93,9 @@ class Employee(MasterMixin, models.Model):
     CQRS_SERIALIZER = 'api_server.serializers.CQRSEmployeeSerializer'
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
-    hiring_date = models.DateTimeField(default=datetime.now, blank=False)
+    hiring_date = models.DateTimeField(default=datetime.now, blank=True)
     skillset = models.ManyToManyField(Skill, through='SkillSets')
-    photo = models.ImageField(upload_to='employees')
+    photo = models.ImageField(upload_to='employees',null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     class Meta:
