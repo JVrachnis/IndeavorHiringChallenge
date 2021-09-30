@@ -36,20 +36,18 @@
 </div>
         </div>
     </div>
+    {# {% include "login.html" %} #}
+
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script src="https://code.jquery.com/jquery-latest.js"></script>
 <script src="https://unpkg.com/coreapi@latest/dist/coreapi.js"></script>
 
-<script type="text/javascript" src="{% static 'js/parse_excel.js' %}"></script>
-{# <script type="text/javascript" src="{% static 'js/test.js' %}"></script> #}
-<script type="text/javascript" src="{% static 'js/cookie.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/post.js' %}"></script>
-<script type="text/javascript">
-client = new api_client();
-$(function() {
 
+<script type="text/javascript">
+
+$(function() {
 console.log(client);
-client.authenticate('admin','123qwe!@#QWE',true);
+
 document.getElementById('button').addEventListener("click", () => {
   XLSX.utils.json_to_sheet(data, 'out.xlsx');
   if (selectedFile) {
@@ -75,8 +73,8 @@ document.getElementById('button').addEventListener("click", () => {
 
 })
 $("#target").click(function() {
-  client.auth_get('/api/skills/')
-  client.auth_post('/api/skills/',{'name':'YEeEeeeeEeeEEeEEeEeEeeeeEEeEeeEETttttTT',categories:['test4'],'description':'MADE IT'})
+  client.auth_get('/api/employees/')
+  client.auth_post('/api/employees/',{'name':'YEeEeeeeEeeEEeEEeEeEeeeeEEeEeeEETttttTT',categories:['test4'],'description':'MADE IT'})
 });
 </script>
 {% endblock %}
