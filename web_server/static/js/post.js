@@ -83,8 +83,8 @@ class api_client {
       },
       success: function(JsonResponse) {
         console.log(JsonResponse)
-        //setCookie('token_type', JsonResponse.token_type, JsonResponse.expires_in)
-        //setCookie('access_token', JsonResponse.access_token, JsonResponse.expires_in)
+        setCookie('token_type', JsonResponse.token_type, JsonResponse.expires_in)
+        setCookie('access_token', JsonResponse.access_token, JsonResponse.expires_in)
         if (remeber){
           setCookie('refresh_token', JsonResponse.refresh_token)
         }
@@ -129,7 +129,7 @@ class api_client {
         return null
     }
   }
-  async auth_check(){
+  auth_check(){
     let access_token= this.getToken();
     console.log(access_token)
     $.ajax({
@@ -140,15 +140,18 @@ class api_client {
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", access_token);
       },
+      async:false,
       success: function(data) {
         console.log(data)
       },
       error: function(JsonResponse) {
         console.log(JsonResponse)
       },
+      traditional: true,
     });
   }
   async auth_post(location, data) {
+    let access_token=this.getToken();
     $.ajax({
       // The URL to process the request
       url: this.get_url(location),
@@ -156,28 +159,32 @@ class api_client {
       dataType: "json",
       data: data,
       beforeSend: function(xhr) {
-        xhr.setRequestHeader("Authorization", this.getToken());
+        xhr.setRequestHeader("Authorization", access_token);
       },
       success: function(data) {
         console.log(data)
-      }
+      },
+      error: function(JsonResponse) {
+        console.log(JsonResponse)
+      },
+      traditional: true,
     });
   }
   async auth_get(location) {
     let access_token=this.getToken();
+    console.log(access_token)
     $.ajax({
       // The URL to process the request
       url: this.get_url(location),
       type: 'GET',
-      data:{},
       dataType: "json",
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", access_token);
       },
       success: function(data) {
         console.log(data)
-        get_xlsx(data)
-      }
+      },
+      traditional: true,
     });
   }
 }

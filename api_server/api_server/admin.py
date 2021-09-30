@@ -17,7 +17,7 @@ class SkillCategoriesInline(admin.TabularInline):
     # extra = 2 # how many rows to show
 
 class SkillAdmin(admin.ModelAdmin):
-    inlines = (SkillSetsInline,)
+    inlines = (SkillCategoriesInline,)
 
 admin.site.register(Skill,SkillAdmin)
 

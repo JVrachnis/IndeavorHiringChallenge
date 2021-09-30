@@ -44,8 +44,6 @@ class Migration(migrations.Migration):
             name='Grant',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cqrs_revision', models.IntegerField(default=0, help_text="This field must be incremented on any model update. It's used to for CQRS sync.")),
-                ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
             ],
             options={
                 'abstract': False,
@@ -55,8 +53,6 @@ class Migration(migrations.Migration):
             name='IDToken',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cqrs_revision', models.IntegerField(default=0, help_text="This field must be incremented on any model update. It's used to for CQRS sync.")),
-                ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
             ],
             options={
                 'abstract': False,
@@ -66,8 +62,6 @@ class Migration(migrations.Migration):
             name='RefreshToken',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cqrs_revision', models.IntegerField(default=0, help_text="This field must be incremented on any model update. It's used to for CQRS sync.")),
-                ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
             ],
             options={
                 'abstract': False,
@@ -76,17 +70,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SkillCategory',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cqrs_revision', models.IntegerField(default=0, help_text="This field must be incremented on any model update. It's used to for CQRS sync.")),
                 ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
-                ('name', models.CharField(max_length=100)),
+                ('name', models.CharField(max_length=100, primary_key=True, serialize=False)),
                 ('soft_skill', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
-            options={
-                'unique_together': {('name', 'soft_skill')},
-            },
         ),
         migrations.CreateModel(
             name='SkillCategories',
@@ -94,7 +84,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cqrs_revision', models.IntegerField(default=0, help_text="This field must be incremented on any model update. It's used to for CQRS sync.")),
                 ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
-                ('created', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
         ),
@@ -105,8 +95,8 @@ class Migration(migrations.Migration):
                 ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
                 ('name', models.CharField(max_length=100, primary_key=True, serialize=False)),
                 ('description', models.CharField(max_length=500)),
-                ('categories', models.ManyToManyField(through='api_server.SkillCategories',to='api_server.SkillCategory', related_name='categories')),
-                ('created', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
+                ('categories', models.ManyToManyField(through='api_server.SkillCategories',to='api_server.SkillCategory')),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
             options={
@@ -146,7 +136,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cqrs_revision', models.IntegerField(default=0, help_text="This field must be incremented on any model update. It's used to for CQRS sync.")),
                 ('cqrs_updated', models.DateTimeField(auto_now=True, help_text="This field must be incremented on every model update. It's used to for CQRS sync.")),
-                ('created', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
         ),
@@ -160,8 +150,8 @@ class Migration(migrations.Migration):
                 ('surname', models.CharField(max_length=50)),
                 ('hiring_date', models.DateTimeField(default=datetime.datetime.now)),
                 ('photo', models.ImageField(upload_to='employees')),
-                ('skillset', models.ManyToManyField(through='api_server.SkillSets',to='api_server.Skill', related_name='skillsets')),
-                ('created', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
+                ('skillset', models.ManyToManyField(through='api_server.SkillSets',to='api_server.Skill')),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
             options={

@@ -50,10 +50,33 @@ $(function() {
 
 console.log(client);
 client.authenticate('admin','123qwe!@#QWE',true);
+document.getElementById('button').addEventListener("click", () => {
+  XLSX.utils.json_to_sheet(data, 'out.xlsx');
+  if (selectedFile) {
+    let fileReader = new FileReader();
+    fileReader.readAsBinaryString(selectedFile);
+    fileReader.onload = (event) => {
+      let data = event.target.result;
+      let workbook = XLSX.read(data, {
+        type: "binary"
+      });
+      skillcategories = workbook;
+      console.log(workbook);
+      workbook.SheetNames.forEach(sheet => {
+        let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
+        console.log(rowObject);
+        document.getElementById("jsondata").innerHTML = JSON.stringify(rowObject, undefined, 4)
+        rowObject.forEach(data => {client.auth_post('/api/skillcategories/',data)
+        });
+      });
+    }
+  }
+});
 
 })
 $("#target").click(function() {
-  client.auth_check() //.auth_get('/api/employees/')
+  client.auth_get('/api/skills/')
+  client.auth_post('/api/skills/',{'name':'YEeEeeeeEeeEEeEEeEeEeeeeEEeEeeEETttttTT',categories:['test4'],'description':'MADE IT'})
 });
 </script>
 {% endblock %}

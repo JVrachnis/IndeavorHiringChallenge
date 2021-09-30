@@ -264,6 +264,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, related_name='api_server_refreshtoken', to='auth.user'),
             preserve_default=False,
         ),
+        migrations.AlterUniqueTogether(
+            name='refreshtoken',
+            unique_together={('token', 'revoked')},
+        ),
         migrations.AlterField(
             model_name='accesstoken',
             name='id',
@@ -290,44 +294,9 @@ class Migration(migrations.Migration):
             field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name='employee',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='employee',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='employee',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
-        migrations.AlterField(
-            model_name='grant',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='grant',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
             model_name='grant',
             name='id',
             field=models.BigAutoField(primary_key=True, serialize=False),
-        ),
-        migrations.AlterField(
-            model_name='idtoken',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='idtoken',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
         ),
         migrations.AlterField(
             model_name='idtoken',
@@ -336,98 +305,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='refreshtoken',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='refreshtoken',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='refreshtoken',
             name='id',
             field=models.BigAutoField(primary_key=True, serialize=False),
-        ),
-        migrations.AlterField(
-            model_name='skill',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='skill',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='skill',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
-        migrations.AlterField(
-            model_name='skillcategories',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='skillcategories',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='skillcategories',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
-        migrations.AlterField(
-            model_name='skillcategory',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='skillcategory',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='skillcategory',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
-        migrations.AlterField(
-            model_name='skillsets',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='skillsets',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='skillsets',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
-        migrations.AlterField(
-            model_name='accesstoken',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='accesstoken',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
-        ),
-        migrations.AlterField(
-            model_name='application',
-            name='cqrs_revision',
-            field=models.IntegerField(),
-        ),
-        migrations.AlterField(
-            model_name='application',
-            name='cqrs_updated',
-            field=models.DateTimeField(),
         ),
         migrations.AlterField(
             model_name='grant',

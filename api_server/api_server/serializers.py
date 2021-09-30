@@ -36,32 +36,53 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
 
-class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
+class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = [ 'name', 'surname', 'hiring_date','skillset','photo']
 
-class SkillCategoriesSerializer(serializers.HyperlinkedModelSerializer):
+class SkillCategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = SkillCategories
-        fields = [ 'skill', 'skillCategories', 'created','skillset','created']
+        fields = ('created','created')
 
-class SkillSerializer(serializers.HyperlinkedModelSerializer):
-    categories = SkillCategoriesSerializer()
-    class Meta:
-        model = Skill
-        fields = ['name', 'categories', 'description']
-
-class SkillCategorySerializer(serializers.HyperlinkedModelSerializer):
+class SkillCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SkillCategory
-        fields = ['name', 'soft_skill']
-
-
-# class UserSerializer(serializers.HyperlinkedModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'groups']
+        fields =  "__all__"
+    # def serialize_skillCategories(self, skill_instance):
+    #     skillCategory_instance = skill_instance \
+    #         .skillCategory_set \
+    #         .filter(category=self.context["category_instance"]) \
+    #         .first()
+    #     print(skillCategory_instance)
+    #     print(skillCategory_set)
+    #     print(skill_instance)
+    #     if skillCategory_instance:
+    #         return SkillCategoriesSerializer(skillCategory_instance).data
+    #     return {}
+    # def to_representation(self, instance):
+    #     rep = super().to_representation(instance)
+    #     return {**rep, **self.serialize_skillCategories(instance)}
+class SkillSerializer(serializers.ModelSerializer):
+    categories = serializers.ListField(child=serializers.CharField())
+    class Meta:
+        model = Skill
+        fields = '__all__' # ['name', 'description','categories']#
+    def create(self, validated_data):
+        skill = Skill(
+            name=validated_data['name'],
+            description=validated_data['description'],
+        )
+        skill.save()
+        for val in validated_data['categories']:
+            if SkillCategory.objects.filter(name=val).exists():
+                skillCategory = SkillCategory.objects.get(name=val)
+            else:
+                skillCategory = SkillCategory(name=val)
+            skillCategory.save()
+            SkillCategories.objects.create(skillCategory=skillCategory,skill=skill)
+        return validated_data
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -93,7 +114,21 @@ class CQRSSkillSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','']
+        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','skillSet']
+    def create(self, validated_data):
+        employee = Employee(
+            name=validated_data['name'],
+            surname=validated_data['surname'],
+            hiring_date=validated_data['hiring_date'],
+            photo=validated_data['photo'],
+        )
+        employee.save()
+        for val in validated_data['skillSet']:
+            if Skill.objects.filter(name=val).exists():
+                skill = Skill.objects.get(name=val)
+                SkillSets.objects.create(employee=employee,skill=skill)
+
+        return validated_data
 
 class CQRSEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -139,7 +174,7 @@ class CQRSSkillCategoriesSerializer:
                 'name': self.instance.skill.name,
             },
             'skillCategory': {
-                'id': self.instance.skillCategory.id,
+                'name': self.instance.skillCategory.name,
             },
             'created': self.instance.created.timestamp(),
             'updated': self.instance.updated.timestamp(),

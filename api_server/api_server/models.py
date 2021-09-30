@@ -25,9 +25,8 @@ class Application(MasterMixin, AbstractApplication):
     # def relate_cqrs_serialization(cls, queryset):
     #     return queryset.select_related('user')
 
-class Grant(MasterMixin, AbstractGrant):
-    CQRS_ID = 'grant'
-    CQRS_SERIALIZER = 'api_server.serializers.GrantTokenSerializer'
+class Grant(AbstractGrant):
+    pass
     # @classmethod
     # def relate_cqrs_serialization(cls, queryset):
     #     return queryset.select_related('user')
@@ -39,16 +38,14 @@ class AccessToken(MasterMixin, AbstractAccessToken):
     # def relate_cqrs_serialization(cls, queryset):
     #     return queryset.select_related('user')
 
-class RefreshToken(MasterMixin, AbstractRefreshToken):
-    CQRS_ID = 'refreshtoken'
-    CQRS_SERIALIZER = 'api_server.serializers.RefreshTokenSerializer'
+class RefreshToken(AbstractRefreshToken):
+    pass
     # @classmethod
     # def relate_cqrs_serialization(cls, queryset):
     #     return queryset.select_related('access_token').select_related('user')
 
-class IDToken(MasterMixin, AbstractIDToken):
-    CQRS_ID = 'idtoken'
-    CQRS_SERIALIZER = 'api_server.serializers.IDTokenSerializer'
+class IDToken(AbstractIDToken):
+    pass
     # @classmethod
     # def relate_cqrs_serialization(cls, queryset):
     #     return queryset.select_related('user')
@@ -57,12 +54,10 @@ class SkillCategory(MasterMixin, models.Model):
     CQRS_ID = 'skillcategory'
     CQRS_TRACKED_FIELDS = ('name', 'soft_skill')
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,primary_key=True)
     soft_skill = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    class Meta:
-        unique_together = ('name', 'soft_skill')
 
 
 class Skill(MasterMixin, models.Model):
@@ -77,7 +72,7 @@ class Skill(MasterMixin, models.Model):
     updated = models.DateTimeField(auto_now=True)
     # @classmethod
     # def relate_cqrs_serialization(cls, queryset):
-    #     return queryset.select_related('categories')
+    #     return queryset.select_related('skillCategory')
 
 class SkillCategories(MasterMixin, models.Model):
     CQRS_ID = 'skillcategories'
@@ -90,7 +85,7 @@ class SkillCategories(MasterMixin, models.Model):
     updated = models.DateTimeField(auto_now=True)
     # @classmethod
     # def relate_cqrs_serialization(cls, queryset):
-    #     return queryset.select_related('skillCategory')
+    #     return queryset.select_related('skill').select_related('skillCategory')
 
 class Employee(MasterMixin, models.Model):
     CQRS_ID = 'employee'
