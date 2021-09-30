@@ -5,33 +5,36 @@ from api_server.models import *
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','skillset']
+        fields = [ 'name', 'surname', 'hiring_date','skillset','photo']
 
-class SkillCategorySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = SkillCategory
-        fields = ['url','id','name', 'soft_skill']
 class SkillCategoriesSerializer(serializers.ModelSerializer):
-
-    skillCategory_soft_skill = serializers.CharField(source='soft_skill')
-    skillCategory_name = serializers.CharField(source='name')
-    skillCategory_id = serializers.CharField(source='id')
     class Meta:
         model = SkillCategories
-        lookup_fields =['skillCategory']
-        fields = ['skillCategory_name','skillCategory_id','skillCategory_soft_skill', 'created','updated']
+        fields = ('created','created')
 
+class SkillCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SkillCategory
+        fields =  "__all__"
 class SkillSerializer(serializers.ModelSerializer):
-    # categories = SkillCategorySerializer(many=True, read_only=True)
+    categories = serializers.ListField(child=serializers.CharField())
     class Meta:
         model = Skill
-        fields = ['name', 'description','categories']
-
-# class SkillSerializer(serializers.HyperlinkedModelSerializer):
-#     class Meta:
-#         model = Skill
-#         fields = ['url','name', 'categories', 'description']
-
+        fields = '__all__' # ['name', 'description','categories']#
+    def create(self, validated_data):
+        skill = Skill(
+            name=validated_data['name'],
+            description=validated_data['description'],
+        )
+        skill.save()
+        for val in validated_data['categories']:
+            if SkillCategory.objects.filter(name=val).exists():
+                skillCategory = SkillCategory.objects.get(name=val)
+            else:
+                skillCategory = SkillCategory(name=val)
+            skillCategory.save()
+            SkillCategories.objects.create(skillCategory=skillCategory,skill=skill)
+        return validated_data
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
