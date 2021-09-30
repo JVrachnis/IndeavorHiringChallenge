@@ -1,42 +1,36 @@
-
 {% extends 'base.html' %}
 {% load static %}
 {% load extra %}
 {% block title %}Home page{% endblock %}{% block content %}
 <div class="jumbotron">
-    <h1 class="display-4">Hello there</h1>
+  <h1 class="display-4">Hello there</h1>
 
 
-    <p class="lead">
-      <div id="target">
-          Click here
-      </div>
-      <div id="upload-target">
-          upload
-      </div>
-    </p>
-    <hr class="my-5">
-    <p class="lead">
-      <div class="tables-doctor">
-      </div>
-    </p>
-    <hr class="my-5">
+  <p class="lead">
+    <div id="target">
+      Click here
+    </div>
+    <div id="upload-target">
+      upload
+    </div>
+  </p>
+  <hr class="my-5">
+  <p class="lead">
+    <div class="tables-doctor">
+    </div>
+  </p>
+  <hr class="my-5">
 </div>
 <div class="conatiner mt-5">
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-3">
-                <input class="form-control" type="file" id="input" accept=".xls,.xlsx"  >
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-primary" id="button">Convert</button>
-            </div>
-<div class="col-md-12">
-    <pre id="jsondata"></pre>
-</div>
-        </div>
+  <div class="row">
+    <div class="col-md-3"></div>
+    
+    <div class="col-md-12">
+      <pre id="jsondata"></pre>
     </div>
-    {# {% include "login.html" %} #}
+  </div>
+</div>
+{# {% include "login.html" %} #}
 
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script src="https://code.jquery.com/jquery-latest.js"></script>
@@ -44,37 +38,14 @@
 
 
 <script type="text/javascript">
-
-$(function() {
-console.log(client);
-
-document.getElementById('button').addEventListener("click", () => {
-  XLSX.utils.json_to_sheet(data, 'out.xlsx');
-  if (selectedFile) {
-    let fileReader = new FileReader();
-    fileReader.readAsBinaryString(selectedFile);
-    fileReader.onload = (event) => {
-      let data = event.target.result;
-      let workbook = XLSX.read(data, {
-        type: "binary"
-      });
-      skillcategories = workbook;
-      console.log(workbook);
-      workbook.SheetNames.forEach(sheet => {
-        let rowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
-        console.log(rowObject);
-        document.getElementById("jsondata").innerHTML = JSON.stringify(rowObject, undefined, 4)
-        rowObject.forEach(data => {client.auth_post('/api/skillcategories/',data)
-        });
-      });
-    }
-  }
-});
-
-})
-$("#target").click(function() {
-  client.auth_get('/api/skills/')
-  client.auth_post('/api/employees/',{'name':'YEeEeeeeeEeeEEeEEeEeEeeeeEEeEeeEETttttTT','surname':'braa',skillset:['web_client']})
-});
+  })
+  $("#target").click(function() {
+    client.auth_get('/api/skills/', filter_data = {})
+    client.auth_post('/api/employees/', {
+      'name': 'YEeEeeeeeEeeEEeEEeEeEeeeeEEeEeeEETttttTT',
+      'surname': 'braa',
+      skillset: ['web_client']
+    })
+  });
 </script>
 {% endblock %}

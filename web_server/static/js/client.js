@@ -1,51 +1,14 @@
-function download_csv(data=null, columnDelimiter = ",", lineDelimiter = "\n") {
-  let result, ctr, keys
-
-    if (data === null || !data.length) {
-      return null
-    }
-
-    keys = Object.keys(data[0])
-
-    result = ""
-    result += keys.join(columnDelimiter)
-    result += lineDelimiter
-
-    data.forEach(item => {
-      ctr = 0
-      keys.forEach(key => {
-        if (ctr > 0) {
-          result += columnDelimiter
-        }
-
-        result += typeof item[key] === "string" && item[key].includes(columnDelimiter) ? `"${item[key]}"` : item[key]
-        ctr++
-      })
-      result += lineDelimiter
-    })
-
-    return result
-
-
-}
-function get_xlsx(data){
-  csv = download_csv(data)
-  console.log(csv);
-  var hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-  hiddenElement.target = '_blank';
-  hiddenElement.download = 'people.csv';
-  hiddenElement.click();
-}
 class api_client {
+  unauthorized_redirect_href = '/login'
   constructor({
     host_url = window.location.protocol + "//" + window.location.host,
     client_id = "e5AnSIkaVJjTCECv28ZXmPxgDzeAjBXe4n4v63n0",
-    client_secret = "kbCmhs2ExhCYOcggI8AjCzXwZHCsElHhSfE2v3cXzzMeZLJmMYFhKdA58teRY42MWAINnFOiYYoKO31nvEFUmjBJigUICDbS6gIa6WxVmIyMXmDxBSwVDoCAfOYJmCup"
+    client_secret = "kbCmhs2ExhCYOcggI8AjCzXwZHCsElHhSfE2v3cXzzMeZLJmMYFhKdA58teRY42MWAINnFOiYYoKO31nvEFUmjBJigUICDbS6gIa6WxVmIyMXmDxBSwVDoCAfOYJmCup",
   }={
     host_url : window.location.protocol + "//" + window.location.host,
     client_id : "e5AnSIkaVJjTCECv28ZXmPxgDzeAjBXe4n4v63n0",
-    client_secret : "kbCmhs2ExhCYOcggI8AjCzXwZHCsElHhSfE2v3cXzzMeZLJmMYFhKdA58teRY42MWAINnFOiYYoKO31nvEFUmjBJigUICDbS6gIa6WxVmIyMXmDxBSwVDoCAfOYJmCup"
+    client_secret : "kbCmhs2ExhCYOcggI8AjCzXwZHCsElHhSfE2v3cXzzMeZLJmMYFhKdA58teRY42MWAINnFOiYYoKO31nvEFUmjBJigUICDbS6gIa6WxVmIyMXmDxBSwVDoCAfOYJmCup",
+
   }) {
     this.host_url = host_url;
     this.client_id = client_id;
@@ -60,7 +23,27 @@ class api_client {
     }
     return this.host_url+'/'+location;
   }
-  authenticate(username, password,remeber=false ) {
+  async register(username, password1,password2,remeber=false,handle_error,handle_success) {
+    let auth = this.authenticate;
+    $.ajax({
+      // The URL to process the request
+      url: this.host_url + '/api/register/',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        'username': username,
+        'password1': password1,
+        'password2': password2,
+      },
+      success: function(data) {
+
+        handle_success(data);
+      },
+      error: handle_error,
+      traditional: true,
+    });
+  }
+  authenticate(username, password,remeber=false,handle_error,handle_success) {
     var client_creds = btoa(this.client_id + ":" + this.client_secret)
 
     console.log(client_creds)
@@ -78,21 +61,23 @@ class api_client {
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", "Basic " + client_creds);
       },
-      error: function(JsonResponse) {
-        console.log(JsonResponse)
-      },
-      success: function(JsonResponse) {
-        console.log(JsonResponse)
-        setCookie('token_type', JsonResponse.token_type, JsonResponse.expires_in)
-        setCookie('access_token', JsonResponse.access_token, JsonResponse.expires_in)
+      error: handle_error,
+      success: function(data) {
+        console.log(data)
+        setCookie('token_type', data.token_type, data.expires_in)
+        setCookie('access_token', data.access_token, data.expires_in)
         if (remeber){
-          setCookie('refresh_token', JsonResponse.refresh_token)
+          setCookie('refresh_token', data.refresh_token)
         }
+        if(handle_success){
+          handle_success(data)
+        }
+
       }
     });
   }
   cred_refresh_token(refresh_token) {
-    var client_creds = btoa(this.client_id + ":" + this.client_secret)
+    var client_creds = btoa(this.client_id + ":" + this.client_secret);
     return JSON.parse($.ajax({
       // The URL to process the request
       url: this.host_url + '/api/o/token/',
@@ -129,24 +114,50 @@ class api_client {
         return null
     }
   }
-  auth_check(){
+  async auth_singout(handle_success,handle_error){
+    var client_creds = btoa(this.client_id + ":" + this.client_secret)
+    let access_token = getCookie('access_token')
+    $.ajax({
+      // The URL to process the request
+      url: this.host_url + '/api/o/revoke_token/',
+      type: 'POST',
+      data: {
+        'token': access_token,
+      },
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("Authorization", "Basic " + client_creds);
+      },
+      success: function(data) {
+        setCookie('token_type', '','expires = Thu, 01 Jan 1970 00:00:00 GMT')
+        setCookie('access_token', '','expires = Thu, 01 Jan 1970 00:00:00 GMT')
+        setCookie('refresh_token', '','expires = Thu, 01 Jan 1970 00:00:00 GMT')
+        handle_success(data)
+      },
+      error: handle_success
+    });
+  }
+  async redirect_unauth(){
+    var redirect_href = this.unauthorized_redirect_href+'?next='+window.location.href
+    let handle_error = function(d) {
+
+      window.location.href = redirect_href
+    }
+    this.auth_check(handle_success = handle_success, handle_error = handle_error)
+  }
+  async auth_check(handle_success,handle_error){
     let access_token= this.getToken();
     console.log(access_token)
     $.ajax({
       // The URL to process the request
       url: this.get_url('/api/'),
-      type: 'POST',
+      type: 'GET',
       dataType: "json",
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", access_token);
       },
       async:false,
-      success: function(data) {
-        console.log(data)
-      },
-      error: function(JsonResponse) {
-        console.log(JsonResponse)
-      },
+      success: handle_success,
+      error: handle_error,
       traditional: true,
     });
   }
@@ -170,20 +181,26 @@ class api_client {
       traditional: true,
     });
   }
-  async auth_get(location) {
+  async auth_get(location,handle_success,handle_error,filter_data=[{}]) {
     let access_token=this.getToken();
-    console.log(access_token)
+    let url =this.get_url(location)+'?';
+    for (const val of filter_data) { // You can use `let` instead of `const` if you like
+      url+= Object.keys(val)[0]+'='+val[Object.keys(val)[0]];
+      console.log(val);
+
+    }
+    console.log(url)
     $.ajax({
       // The URL to process the request
-      url: this.get_url(location),
+      url: url,
       type: 'GET',
+      data: filter_data,
       dataType: "json",
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", access_token);
       },
-      success: function(data) {
-        console.log(data)
-      },
+      success: handle_success,
+      error:handle_error,
       traditional: true,
     });
   }

@@ -19,9 +19,10 @@ import random
 import string
 from django.core import serializers
 def home(request):
-    return render(request, 'home.html',{'helppage':5})
-#            data={client_id:"tmGXpMsmWnfAaQUWWckp3Z2wUjICYIA6JyMncvym",client_secret:"XuHR87IavxzivItmZho3udTveIaKgq30S7Lyg4jEcpQ4ZnbtYijSQ6lWBjKFcsQoqRDRe3r89my2bHaL9wfjWhsOPmFPKxTnwxdRyHGF4ZCLZCzjgS5IJoTTzhtmSEQM"}
-#
-
-#
-#arnkDubHTi80QWcaMYJVmBNJtrqf3mBMmS2XkyHIWBkmNbgt7rwSkFU33RDGiUITL18WAUKgxWba7vQiQIgtXUMl4HJSGq0fjkZDBYNiRVLFKTOqgSlEn9GRCcZYYdnr
+    return render(request, 'home.html')
+def login(request):
+    return render(request, 'authentication/login.html')
+def test(request):
+    return render(request, 'test.html')
+def test_inputs(request):
+    return render(request, 'test_inputs.html')

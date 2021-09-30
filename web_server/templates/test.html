@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<nav class="navbar navbar-light bg-light justify-content-between">
+  <button class="btn btn-secondary" id="btnExport" onclick="fnExcelReport('employees_table');"> EXPORT </button>
+  <div class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id='search_input'>
+    <button class="btn btn-outline-success my-2 my-sm-0 " id='search_button'>Search</button>
+  </div>
+</nav>
+<table class="table table-dark  table-striped" id='employees_table'>
+</table>
+{% endblock %}

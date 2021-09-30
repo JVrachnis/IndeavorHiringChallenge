@@ -1,0 +1,49 @@
+{# <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe> #}
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <form class="form-signin" name="loginform" id='loginform'>
+            <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+            <div class="form-group">
+              <label for="id_username" class="sr-only">Username:</label>
+              <input type="text" class="form-control" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username" placeholder="Username" required>
+              <div class="invalid-feedback">
+                Please add your username
+              </div>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="id_password" class="sr-only">Password:</label>
+              <input type="password" class="form-control" name="password" autocomplete="current-password" required="" id="id_password" placeholder="Password" required>
+              <div class="invalid-feedback">
+                Please add your password
+              </div>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="alert alert-danger" role="alert" id='error_messege'>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" data-toggle="switch" id="remeberme" value="true" name="remeberme">
+              <label class="form-check-label" for="remeberme">Remember Me</label>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

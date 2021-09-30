@@ -6,32 +6,31 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 # first we define the serializers
 class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-            required=True,
-            validators=[UniqueValidator(queryset=User.objects.all())]
-            )
+    # email = serializers.EmailField(
+    #         required=True,
+    #         validators=[UniqueValidator(queryset=User.objects.all())]
+    #         )
 
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'password2', 'email')
+        fields = ('username', 'password1', 'password2')
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        if attrs['password1'] != attrs['password2']:
+            raise serializers.ValidationError({"password1": "Password fields didn't match."})
 
         return attrs
 
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
-            email=validated_data['email'],
         )
 
 
-        user.set_password(validated_data['password'])
+        user.set_password(validated_data['password1'])
         user.save()
 
         return user
@@ -124,8 +123,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         print(validated_data)
         if 'photo'  in validated_data:
             employee.photo = validated_data['photo']
-        # if 'hiring_date' in validated_data:
-        #     employee.,
         employee.save()
         if 'skillset' in validated_data:
             for val in validated_data['skillset']:
