@@ -2,10 +2,7 @@ from rest_framework import generics, permissions, serializers, viewsets
 from django.contrib.auth.models import User, Group
 from api_server.models import *
 # first we define the serializers
-class EmployeeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Employee
-        fields = [ 'name', 'surname', 'hiring_date','skillset','photo']
+
 
 class SkillCategoriesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,26 +14,14 @@ class SkillCategorySerializer(serializers.ModelSerializer):
         model = SkillCategory
         fields =  "__all__"
 class SkillSerializer(serializers.ModelSerializer):
-    categories = serializers.ListField(child=serializers.CharField())
     class Meta:
         model = Skill
-        fields = '__all__' # ['name', 'description','categories']#
-    def create(self, validated_data):
-        skill = Skill(
-            name=validated_data['name'],
-            description=validated_data['description'],
-        )
-        skill.save()
-        for val in validated_data['categories']:
-            if SkillCategory.objects.filter(name=val).exists():
-                skillCategory = SkillCategory.objects.get(name=val)
-            else:
-                skillCategory = SkillCategory(name=val)
-            skillCategory.save()
-            SkillCategories.objects.create(skillCategory=skillCategory,skill=skill)
-        return validated_data
+        fields = ['name', 'description','categories','created','url']#
 
-
+class EmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields =['name','surname','hiring_date','skillset','url']
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User

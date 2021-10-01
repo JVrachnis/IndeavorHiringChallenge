@@ -36,10 +36,44 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    skillset = serializers.ListField(child=serializers.CharField())
     class Meta:
         model = Employee
-        fields = [ 'name', 'surname', 'hiring_date','skillset','photo']
-
+        fields = '__all__' # ['name', 'description','categories']#
+    def create(self, validated_data):
+        employee = Employee(
+            name=validated_data['name'],
+            surname=validated_data['surname'],
+            hiring_date=validated_data['hiring_date'],
+        )
+        employee.save()
+        print('here')
+        print(validated_data)
+        if 'skillset' in validated_data:
+            for val in validated_data['skillset']:
+                if Skill.objects.filter(name=val).exists():
+                    skill = Skill.objects.get(name=val)
+                else:
+                    skill = Skill(name=val,description='')
+                    skill.save()
+                SkillSets.objects.create(employee=employee,skill=skill)
+        return validated_data
+    def update(self,instance,validated_data):
+        employee = instance
+        employee.name=validated_data.get('name', instance.name)
+        employee.surname=validated_data.get('surname', instance.surname)
+        employee.hiring_date=validated_data.get('hiring_date', instance.hiring_date)
+        employee.save()
+        SkillSets.objects.filter(employee=employee).delete()
+        if 'skillset' in validated_data:
+            for val in validated_data['skillset']:
+                if Skill.objects.filter(name=val).exists():
+                    skill = Skill.objects.get(name=val)
+                else:
+                    skill = Skill(name=val,description='')
+                    skill.save()
+                SkillSets.objects.create(employee=employee,skill=skill)
+        return validated_data
 class SkillCategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = SkillCategories
@@ -68,7 +102,19 @@ class SkillSerializer(serializers.ModelSerializer):
             skillCategory.save()
             SkillCategories.objects.create(skillCategory=skillCategory,skill=skill)
         return validated_data
-
+    def update(self,instance,validated_data):
+        skill = instance
+        skill.description=validated_data.get('description', instance.description)
+        skill.save()
+        SkillCategory.objects.filter(skill=skill).delete()
+        for val in validated_data['categories']:
+            if SkillCategory.objects.filter(name=val).exists():
+                skillCategory = SkillCategory.objects.get(name=val)
+            else:
+                skillCategory = SkillCategory(name=val)
+            skillCategory.save()
+            SkillCategories.objects.create(skillCategory=skillCategory,skill=skill)
+        return validated_data
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
@@ -95,29 +141,6 @@ class CQRSSkillSerializer(serializers.ModelSerializer):
             'updated': self.instance.updated.timestamp(),
             'CQRS_ID': self.instance.CQRS_ID,
         }
-
-class EmployeeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Employee
-        fields = ['url','id', 'name', 'surname', 'hiring_date','photo','skillset']
-    def create(self, validated_data):
-        employee = Employee(
-            name=validated_data['name'],
-            surname=validated_data['surname'],
-            hiring_date=validated_data['hiring_date'],
-        )
-        print(validated_data)
-        if 'photo'  in validated_data:
-            employee.photo = validated_data['photo']
-        employee.save()
-        if 'skillset' in validated_data:
-            for val in validated_data['skillset']:
-                if Skill.objects.filter(name=val).exists():
-                    skill = Skill.objects.get(name=val)
-                    SkillSets.objects.create(employee=employee,skill=skill)
-
-        return employee
-
 class CQRSEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee

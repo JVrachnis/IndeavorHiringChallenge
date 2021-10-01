@@ -78,7 +78,11 @@ class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['name', 'description','categories__name']
+    search_fields = ['name', 'description','categories__name']
+    ordering_fields = ['name','description','categories__name']
+    ordering = ['name']
 
     @method_decorator(cache_page(3))
     def list(self, *args, **kwargs):

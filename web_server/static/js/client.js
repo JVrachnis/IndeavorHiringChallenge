@@ -182,16 +182,44 @@ class api_client {
     let url =this.get_url(location)+'?';
     for (const val of filter_data) { // You can use `let` instead of `const` if you like
       url+= Object.keys(val)[0]+'='+val[Object.keys(val)[0]];
-      console.log(val);
-
     }
-    console.log(url)
     $.ajax({
       // The URL to process the request
       url: url,
       type: 'GET',
       data: filter_data,
       dataType: "json",
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("Authorization", access_token);
+      },
+      success: handle_success,
+      error:handle_error,
+      traditional: true,
+    });
+  }
+  async auth_delete(location,handle_success,handle_error) {
+    let access_token=this.getToken();
+    $.ajax({
+      // The URL to process the request
+      url: this.get_url(location),
+      type: 'DELETE',
+      dataType: "json",
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("Authorization", access_token);
+      },
+      success: handle_success,
+      error:handle_error,
+      traditional: true,
+    });
+  }
+  async auth_put(location,data,handle_success,handle_error) {
+    let access_token=this.getToken();
+    $.ajax({
+      // The URL to process the request
+      url: this.get_url(location),
+      type: 'PUT',
+      dataType: "json",
+      data: data,
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", access_token);
       },

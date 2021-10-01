@@ -1,0 +1,19 @@
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownExerc" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Skills
+  </a>
+  <div class="dropdown-menu" aria-labelledby="navbarDropdownExerc">
+    <ul>
+      <li>
+        <a class="dropdown-item" onclick="update_table('#employees_table', skill_table_rows, '/api/skills/', '#search_input', '#search_button',)">View Skills<span class="sr-only">(current)</span></a>
+      </li>
+      <li>
+        <a class="dropdown-item" data-toggle="modal" data-target="#import_skillsModal">Add Skills<span class="sr-only">(current)</span></a>
+      </li>
+      <li>
+        <a class="dropdown-item" data-toggle="modal" data-target="#edit_skillsModal" onclick="edit_table('#edit_skills_table', skill_edit_rows_template, '/api/skills/', '#edit_skills_search_input', '#edit_skills_search_button')">Edit Skills<span
+            class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+</li>

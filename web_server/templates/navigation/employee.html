@@ -1,0 +1,19 @@
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownExerc" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Employees
+  </a>
+  <div class="dropdown-menu" aria-labelledby="navbarDropdownExerc">
+    <ul>
+      <li>
+        <a class="dropdown-item" onclick="update_table('#employees_table', employee_table_rows, '/api/employees/', '#search_input', '#search_button',)">View Employees<span class="sr-only">(current)</span></a>
+      </li>
+      <li>
+        <a class="dropdown-item" data-toggle="modal" data-target="#import_employeesModal">Add Employees<span class="sr-only">(current)</span></a>
+      </li>
+      <li>
+        <a class="dropdown-item" data-toggle="modal" data-target="#edit_employeesModal" onclick="edit_table('#edit_employees_table', employee_edit_rows_template, '/api/employees/', '#edit_employees_search_input', '#edit_employees_search_button')">Edit
+          Employees<span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+</li>
