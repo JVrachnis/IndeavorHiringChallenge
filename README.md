@@ -27,3 +27,33 @@ https://0.0.0.0/
     'example for chrome':
     https://www.pico.net/kb/how-do-you-get-chrome-to-accept-a-self-signed-certificate/
 (9) register and play around
+
+structure:
+backend:
+  the api is cqrs,rest based
+    with a master server that handles:
+      authentication:
+        registration:
+          happens without some kind of authentication, just api call without credentials
+        getting access,refresh token from client credentials + user credentials
+          access tokens pass to the api replicas
+          refresh token stays only on the master and used to refresh the access token
+      create/update objects from api
+    the data is passed to a messeger server 'rabbit' that handles:
+      passing the data to the api replica consumers
+    the consumers handle the update of the data
+    the api replica servers handle the serving and cashing of the data (using redis)
+    the web servers handle only passing html and static data (doesnt have authentication)
+    the nginx server handles:
+      ssl authentication
+      reverse_proxy:
+        separating web,query and command
+      load_balancing:
+        2 query servers (api replicas)
+        1 command server (apo server)
+        2 web server
+front end:
+  the front end is a web site using bootstrap , jquery ajax for dynamic loading
+  a client class is the backbone that connects the api to the web, contains all
+    ajax requests
+  everything is template based 
