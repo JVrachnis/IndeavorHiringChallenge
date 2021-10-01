@@ -9,6 +9,38 @@ const employee_row_template = ({
   <td colspan="1">${name}</td>
   <td colspan="1">${surname}</td>
   <td colspan="1">${hiring_date}</td>
+
+  <input class'noExl' type="hidden" name="id" value="${id}" />
+  <input class'noExl' type="hidden" name="url" value="${url}" />
+</tr>
+`;
+const employee_edit_row_template = ({
+  name,
+  surname,
+  hiring_date,
+  id,
+  url
+}) => `
+<tr>
+  <td colspan="1">${name}</td>
+  <td colspan="1">${surname}</td>
+  <td colspan="1">${hiring_date}</td>
+  <input class'noExl' type="hidden" name="id" value="${id}" />
+  <input class'noExl' type="hidden" name="url" value="${url}" />
+</tr>
+`;
+const employee_details_row_template = ({
+  name,
+  surname,
+  hiring_date,
+  id,
+  url
+}) => `
+<tr>
+  <td colspan="1">${name}</td>
+  <td colspan="1">${surname}</td>
+  <td colspan="1">${hiring_date}</td>
+
   <input class'noExl' type="hidden" name="id" value="${id}" />
   <input class'noExl' type="hidden" name="url" value="${url}" />
 </tr>
@@ -42,6 +74,10 @@ const employee_input_row_template = ({
   </td>
   <td colspan="1">
     <input name="hiring_date" value="${hiring_date}" />
+  </td>
+  <td colspan="1">
+    <button class="btn btn-primary" onclick="upload_input_row(this,'/api/employees/')">Submit</button>
+    <button class="btn btn-primary" onclick="remove_input_row(this)">Remove</button>
   </td>
 </tr>
 `;

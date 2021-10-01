@@ -25,4 +25,4 @@ def login(request):
 def test(request):
     return render(request, 'test.html')
 def test_inputs(request):
-    return render(request, 'test_inputs.html')
+    return render(request, 'test_inputs.html',{'base_id':'employee_input_table'})

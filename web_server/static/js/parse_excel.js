@@ -1,4 +1,4 @@
-function import_xls_data_to_table(input, table,button) {
+function import_xls_data_to_table(input, table,rows_template,button) {
   let data2 = [{
     "name": "jayanth",
     "data2": "scd",
@@ -21,7 +21,7 @@ function import_xls_data_to_table(input, table,button) {
 
         console.log(rowObject);
         $(import_employees_upload_button).prop( "disabled", false );
-        $(table+' > tbody').append(employee_input_rows_template(rowObject));
+        $(table+' > tbody').append(rows_template(rowObject));
       });
     }
   }

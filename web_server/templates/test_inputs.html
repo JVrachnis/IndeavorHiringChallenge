@@ -8,11 +8,17 @@
     <div class="col-md-3">
       <input class="form-control" type="file" id="import_employees_input" accept=".xls,.xlsx">
     </div>
-    <div class="col-md-2">
-      <button class="btn btn-primary" id="import_employees_preview_button" onclick="import_xls_data_to_table('#import_employees_input','#import_employees_table','#import_employees_table')">Add file</button>
+    <div class="col-md-1">
+      <button class="btn btn-primary" id="import_employees_preview_button" onclick="import_xls_data_to_table('#import_employees_input','#import_employees_table',employee_input_rows_template,'#import_employees_table')">Add File</button>
     </div>
-    <div class="col-md-2">
-      <button class="btn btn-secondary" id="import_employees_upload_button" onclick="upload_input_table('#import_employees_table')">upload</button>
+    <div class="col-md-1">
+      <button class="btn btn-secondary" id="import_employees_upload_button" onclick="upload_input_table('#import_employees_table','/api/employees/')">Submit All</button>
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-secondary" id="import_employees_upload_button" onclick="clean_input_table('#import_employees_table')">Remove All</button>
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-secondary" id="import_employees_upload_button" onclick="add_row('#import_employees_table',employee_input_row_template,[{name:'',surname:'',hiring_date:''}])">Add Row</button>
     </div>
   </div>
 </div>
@@ -22,31 +28,12 @@
        <th>name</th>
        <th>surname</th>
        <th>hiring_date</th>
+       <th>action</th>
      </tr>
   </thead>
   <tbody>
 </table>
-
-
 <script type="text/javascript">
-  client.redirect_unauth()
   $('#import_employees_upload_button').prop( "disabled", true );
-  var handle_success = function(d) {
-    console.log(d)
-
-  }
-
-  function upload_input_table(table) {
-    $(table+' > tbody  > tr').each(function(index, tr) {
-      employee = {}
-      $('input', this).each(function(index, tr) {
-        employee[$(this).attr('name')] = $(this).val()
-      })
-      client.auth_post('/api/employees/', employee)
-      console.log(employee);
-    });
-  };
-
-  
 </script>
 {% endblock %}

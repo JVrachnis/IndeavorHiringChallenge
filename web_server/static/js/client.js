@@ -161,7 +161,7 @@ class api_client {
       traditional: true,
     });
   }
-  async auth_post(location, data) {
+  async auth_post(location, data,handle_success,handle_error) {
     let access_token=this.getToken();
     $.ajax({
       // The URL to process the request
@@ -172,12 +172,8 @@ class api_client {
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", access_token);
       },
-      success: function(data) {
-        console.log(data)
-      },
-      error: function(JsonResponse) {
-        console.log(JsonResponse)
-      },
+      success: handle_success,
+      error: handle_error,
       traditional: true,
     });
   }

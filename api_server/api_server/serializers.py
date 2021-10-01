@@ -49,20 +49,6 @@ class SkillCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SkillCategory
         fields =  "__all__"
-    # def serialize_skillCategories(self, skill_instance):
-    #     skillCategory_instance = skill_instance \
-    #         .skillCategory_set \
-    #         .filter(category=self.context["category_instance"]) \
-    #         .first()
-    #     print(skillCategory_instance)
-    #     print(skillCategory_set)
-    #     print(skill_instance)
-    #     if skillCategory_instance:
-    #         return SkillCategoriesSerializer(skillCategory_instance).data
-    #     return {}
-    # def to_representation(self, instance):
-    #     rep = super().to_representation(instance)
-    #     return {**rep, **self.serialize_skillCategories(instance)}
 class SkillSerializer(serializers.ModelSerializer):
     categories = serializers.ListField(child=serializers.CharField())
     class Meta:
