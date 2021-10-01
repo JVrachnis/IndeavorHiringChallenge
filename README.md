@@ -56,4 +56,9 @@ front end:
   the front end is a web site using bootstrap , jquery ajax for dynamic loading
   a client class is the backbone that connects the api to the web, contains all
     ajax requests
-  everything is template based 
+  everything is template based
+  all in one page, everything is updated dynamically
+    view employees / skills is updating a table in the home page
+      can export the table to excel (had some issues with the list of skills / skill categories and option buttons)
+    everything else is modal popups
+      adding employees / skills can be done by importing files (they must have proper headers, some issues with skills / skill categories)
