@@ -160,7 +160,7 @@ services:
       - ./nginx_server/ssl/cert/nginx-selfsigned.crt:/etc/nginx/cert/star_xx_com.crt
     ports:
       - "8080:8080"
-      - "192.168.2.164:443:443"
+      - "443:443"
       - "80:80"
     links:
      - api
