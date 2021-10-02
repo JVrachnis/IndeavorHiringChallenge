@@ -94,6 +94,8 @@ https://0.0.0.0/
   **authedication is the same as https://0.0.0.0/api/**
   repsonts with {"success"}
 ## Project Structure
+![alt text](https://github.com/JVrachnis/IndeavorHiringChallenge/blob/after_deadline_paching/service_diagram.png?raw=true)
+
 + ### BACKEND:
   + ##### The api is cqrs,rest based`
     + ##### A master server handles:
