@@ -23,6 +23,13 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = RegisterSerializer
 
+class CheckAuth(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        return Response(['success'])
+    def post(self, request, format=None):
+        return Response(['success'])
 # class UserViewSet(viewsets.ModelViewSet):
 #
 #     """

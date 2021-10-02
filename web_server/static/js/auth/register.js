@@ -20,8 +20,9 @@ $(document).ready(function() {
   var handle_success_register = function(d) {
     client.authenticate($('#registration_username').val(),
       $('#registration_password1').val(),
-      $('#registration_remeberme').val());
-    location.reload();
+      true);
+      $('#registerModal').modal('hide');
+      setTimeout(() => {  location.reload() }, 200);
   }
   $('#registerform').submit(function(e) {
 

@@ -35,4 +35,5 @@ urlpatterns = [
     path('api/o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/register/', RegisterView.as_view(), name='register'),
+    path('api/o/checkauth/',CheckAuth.as_view()),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

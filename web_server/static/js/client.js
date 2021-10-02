@@ -36,7 +36,6 @@ class api_client {
         'password2': password2,
       },
       success: function(data) {
-
         handle_success(data);
       },
       error: handle_error,
@@ -105,18 +104,20 @@ class api_client {
     let token_type = getCookie('token_type')
     let access_token = getCookie('access_token')
     let refresh_token = getCookie('refresh_token')
+    var cred = ''
     if(!! access_token) {
-        return token_type + " " + access_token
+        cred= token_type + " " + access_token
     } else if (!! refresh_token) {
         let JsonResponse = this.cred_refresh_token(refresh_token)
-        return JsonResponse.token_type + " " + JsonResponse.access_token
-    } else{
-        return null
+         cred = JsonResponse.token_type + " " + JsonResponse.access_token
     }
+
+    return cred
   }
   async auth_singout(handle_success,handle_error){
     var client_creds = btoa(this.client_id + ":" + this.client_secret)
     let access_token = getCookie('access_token')
+    this.auth_check()
     $.ajax({
       // The URL to process the request
       url: this.host_url + '/api/o/revoke_token/',
@@ -144,13 +145,13 @@ class api_client {
     }
     this.auth_check(handle_success = handle_success, handle_error = handle_error)
   }
-  async auth_check(handle_success,handle_error){
+  async auth_check(handle_success,handle_error = ()=>{setTimeout(() => {  location.reload() }, 200);}){
     let access_token= this.getToken();
     console.log(access_token)
     $.ajax({
       // The URL to process the request
-      url: this.get_url('/api/'),
-      type: 'GET',
+      url: this.get_url('/api/o/checkauth/'),
+      type: 'post',
       dataType: "json",
       beforeSend: function(xhr) {
         xhr.setRequestHeader("Authorization", access_token);
@@ -183,6 +184,7 @@ class api_client {
     for (const val of filter_data) { // You can use `let` instead of `const` if you like
       url+= Object.keys(val)[0]+'='+val[Object.keys(val)[0]];
     }
+    this.auth_check()
     $.ajax({
       // The URL to process the request
       url: url,
@@ -199,6 +201,7 @@ class api_client {
   }
   async auth_delete(location,handle_success,handle_error) {
     let access_token=this.getToken();
+    this.auth_check()
     $.ajax({
       // The URL to process the request
       url: this.get_url(location),
@@ -214,6 +217,7 @@ class api_client {
   }
   async auth_put(location,data,handle_success,handle_error) {
     let access_token=this.getToken();
+    this.auth_check()
     $.ajax({
       // The URL to process the request
       url: this.get_url(location),
