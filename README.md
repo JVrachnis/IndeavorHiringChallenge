@@ -1,26 +1,26 @@
 # IndeavorHiringChallenge
 This is a project on response to the Indeavor hiring challenge
 
-###To initiate the project:
-####(1) migrate the tables by:
+### To initiate the project:
+#### (1) migrate the tables by:
 ```bash
 sudo docker-compose run api python manage.py migrate
 sudo docker-compose run api_replica_1 python manage.py migrate
 sudo docker-compose run api_replica_2 python manage.py migrate
 ```
-####(2) create admin user:
+#### (2) create admin user:
 ```bash
 run sudo docker-compose run api python manage.py createsuperuser
 ```
-####(4) bring up the container:
-#####  make sure you have the right acces
+#### (4) bring up the container:
+##### make sure you have the right acces
 ```bash
 sudo chown -R $USER:$USER .
 docker-compose up
 ```
-####((5) login the admin site on the api server:
+#### ((5) login the admin site on the api server:
 http://0.0.0.0:8000/api/admin
-####((6) register new application:
+#### ((6) register new application:
 http://0.0.0.0:8000/api/o/applications/register/
 with
 `Client id = e5AnSIkaVJjTCECv28ZXmPxgDzeAjBXe4n4v63n0`
@@ -29,14 +29,14 @@ with
 `Authorization grant type = Resource owner password-based`
 name can be whatever
 nothing else needs change
-####(7) access the actual web site:
+#### (7) access the actual web site:
 https://0.0.0.0/
-####(8) add self-signed certificate to trusted
+#### (8) add self-signed certificate to trusted
     'example for chrome':
     https://www.pico.net/kb/how-do-you-get-chrome-to-accept-a-self-signed-certificate/
-####(9) register and play around
-##API
-####Structure
+#### (9) register and play around
+## API
+#### Structure
 + ##### https://0.0.0.0/api/ (No POST/PUT/DELETE)
 	Most thigns in here need authedication
 	In the request header add `Authorization: Bearer {token}`
@@ -93,8 +93,8 @@ https://0.0.0.0/
   + ##### https://0.0.0.0/o/checkauth/ (POST/GET)
   **authedication is the same as https://0.0.0.0/api/**
   repsonts with {"success"}
-##Project Structure
-+ ###BACKEND:
+## Project Structure
++ ### BACKEND:
   + ##### The api is cqrs,rest based`
     + ##### A master server handles:
        + ##### Authentication:
@@ -117,7 +117,7 @@ https://0.0.0.0/
         + 2 query servers (api replicas)
         + 1 command server (apo server)
         + 2 web server
-+ ###Front end:
++ ### Front end:
   + ##### The front end is a web site using bootstrap , jquery ajax for dynamic loading
    + ##### A client class is the backbone that connects the api to the web, contains all
      + Ajax requests
