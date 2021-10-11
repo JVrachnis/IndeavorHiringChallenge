@@ -57,6 +57,7 @@ const skill_input_row_template = ({
   name,
   description,
   categories,
+  created,
 }) => {
   var ss = []
   if (Array.isArray(categories)) {
@@ -75,14 +76,19 @@ const skill_input_row_template = ({
     </td>
     <td colspan="1">
     <div class="noExl btn-group dropleft">
-      <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="category_button_${name}_${categories}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="category_button_${name}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         view
       </button>
-      <div class="dropdown-menu" aria-labelledby="category_button_${name}_${categories}" id="category_button_${name}_${categories}_menu" >
+      <div class="dropdown-menu" aria-labelledby="category_button_${name}" id="category_button_${name}_menu" >
+        <table>
         ${ss.map(skill_input_category_template).join('')}
+        </table>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="add_input('#category_button_${name}_${categories}_menu',skill_input_category_template)">Add category</button>
+    <button class="btn btn-primary" onclick="add_input('#category_button_${name}_menu',skill_input_category_template)">Add category</button>
+    </td>
+    <td colspan="1">
+      <input name="created" value="${created}" />
     </td>
     <td colspan="1">
       <button class="btn btn-primary" onclick="upload_input_row(this,'/api/skills/')">Submit</button>
@@ -99,6 +105,7 @@ const skill_edit_row_template = ({
   name,
   description,
   categories,
+  created,
   url,
 }) => {
   var ss = []
@@ -111,24 +118,27 @@ const skill_edit_row_template = ({
   return `
   <tr class="data">
     <td colspan="1">
-      <input name="name" value="${name}" />
+      <input name="name" value="${name}" disabled/>
     </td>
     <td colspan="1">
       <input name="description" value="${description}" />
     </td>
     <td colspan="1">
     <div class="noExl btn-group dropleft">
-      <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="category_button_${name}_${categories}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="category_button_${name}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         view
       </button>
 
-      <div class="dropdown-menu" aria-labelledby="category_button_${name}_${categories}" id="category_button_${name}_${categories}_menu" >
+      <div class="dropdown-menu" aria-labelledby="category_button_${name}" id="category_button_${name}_menu" >
         <table>
         ${ss.map(skill_input_category_template).join('')}
         </table>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="add_input('#category_button_${name}_${categories}_menu',skill_input_category_template)">Add category</button>
+    <button class="btn btn-primary" onclick="add_input('#category_button_${name}_menu',skill_input_category_template)">Add category</button>
+    </td>
+    <td colspan="1">
+      <input name="created" value="${created}" />
     </td>
     <td colspan="1">
       <button class="btn btn-primary" onclick="save_input_row(this)">Save</button>

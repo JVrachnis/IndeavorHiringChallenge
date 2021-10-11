@@ -80,16 +80,16 @@ const employee_input_row_template = ({
   </td>
   <td colspan="1">
   <div class="noExl btn-group dropleft">
-    <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="skillset_button_${name+surname+hiring_date}_${skillset}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="skillset_button_${name+surname}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       view
     </button>
-    <div class="dropdown-menu" aria-labelledby="skillset_button_${name+surname+hiring_date}_${skillset}" id="skillset_button_${name+surname+hiring_date}_${skillset}_menu" >
+    <div class="dropdown-menu" aria-labelledby="skillset_button_${name+surname}" id="skillset_button_${name+surname}__menu" >
       <table>
       ${ss.map(employee_input_skill_template).join('')}
       </table>
     </div>
   </div>
-  <button class="btn btn-primary" onclick="add_input('#skillset_button_${name+surname+hiring_date}_${skillset}_menu',employee_input_skill_template)">Add skillset</button>
+  <button class="btn btn-primary" onclick="add_input('#skillset_button_${name+surname}_menu',employee_input_skill_template)">Add skillset</button>
   </td>
   <td colspan="1">
     <button class="btn btn-primary" onclick="upload_input_row(this,'/api/employees/')">Submit</button>
@@ -117,7 +117,8 @@ const employee_edit_row_template = ({
   surname,
   hiring_date,
   skillset,
-  url
+  url,
+  id
 })=>{
   var ss=[]
   if(Array.isArray(skillset)){
@@ -139,16 +140,16 @@ const employee_edit_row_template = ({
   </td>
   <td colspan="1">
   <div class="noExl btn-group dropleft">
-    <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="skillset_button_${name+surname+hiring_date}_${skillset}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="noExl btn btn-secondary dropdown-toggle" type="button" id="skillset_edit_button_${id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       view
     </button>
-    <div class="dropdown-menu" aria-labelledby="skillset_button_${name+surname+hiring_date}_${skillset}" id="skillset_button_${name+surname+hiring_date}_${skillset}_menu" >
+    <div class="dropdown-menu" aria-labelledby="skillset_edit_button_${id}" id="skillset_edit_button_${id}_menu" >
       <table>
       ${ss.map(employee_input_skill_template).join('')}
       </table>
     </div>
   </div>
-  <button class="btn btn-primary" onclick="add_input('#skillset_button_${name+surname+hiring_date}_${skillset}_menu',employee_input_skill_template)">Add skillset</button>
+  <button class="btn btn-primary" onclick="add_input('#skillset_edit_button_${id}_menu',employee_input_skill_template)">Add skillset</button>
   </td>
   <td colspan="1">
     <button class="btn btn-primary" onclick="save_input_row(this)">Save</button>
